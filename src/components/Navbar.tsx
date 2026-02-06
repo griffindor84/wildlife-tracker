@@ -1,12 +1,17 @@
 import { Link } from 'react-router-dom';
+import './Navbar.css';
 
-function Navbar (){
-    return(
-        <nav style={{ padding: '1rem', backgroundColor: '#eee' }}>
-      <Link to="/" style={{ marginRight: '1rem' }}>Home</Link>
-      <Link to="/login" style={{ marginRight: '1rem' }}>Login</Link>
-      <Link to="/register">Register</Link>
+function Navbar() {
+  return (
+    <nav className="navbar">
+      <Link to="/" className="nav-link">Home</Link>
+      <Link to="/login" className="nav-link">Login</Link>
+      <Link to="/register" className="nav-link">Register</Link>
+      <Link to="/reports" className="nav-link">Reports</Link>
+      <Link to="/species" className="nav-link">Species</Link>
+      <Link to="/observations" className="nav-link">Observations</Link>
     </nav>
-    )
+  );
 }
+
 export default Navbar;
