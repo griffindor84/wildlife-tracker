@@ -1,0 +1,113 @@
+.observations-container {
+  background-color: #0b0e14;
+  color: #f1f5f9;
+  min-height: 100vh;
+  padding: 50px 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.observations-header {
+  max-width: 1200px;
+  margin: 0 auto 30px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 20px;
+}
+
+.header-text h1 {
+  color: #10b981;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.header-text p {
+  color: #94a3b8;
+}
+
+.filter-input {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  width: 300px;
+  outline: none;
+}
+
+.filter-input:focus {
+  border-color: #10b981;
+}
+
+.table-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #1e293b;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.observations-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.observations-table th {
+  background-color: #0f172a;
+  color: #94a3b8;
+  padding: 15px 20px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.observations-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid #334155;
+  font-size: 0.9rem;
+}
+
+.species-name-cell {
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Badge System */
+.type-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.type-badge.general-sighting {
+  background-color: #064e3b;
+  color: #6ee7b7;
+}
+
+.type-badge.injured-animal {
+  background-color: #7f1d1d;
+  color: #fecaca;
+}
+
+.type-badge.illegal-activity {
+  background-color: #450606;
+  color: #fca5a5;
+}
+
+.notes-cell {
+  color: #94a3b8;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
