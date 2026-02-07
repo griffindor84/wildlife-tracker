@@ -1,35 +1,77 @@
+import { useState } from "react";
+import LocationMap from "../components/LocationMap";
+import type { Coords } from "../components/LocationMap";
 import "./reports.css";
 
 function Reports() {
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [coords, setCoords] = useState<Coords | null>(null);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const reportData = {
+      locationText: selectedLocation,
+      coordinates: coords,
+    };
+
+    console.log("Submitting report:", reportData);
+    alert("Report submitted! (Check console for data)");
+  };
+
+  const handleCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const currentCoords: Coords = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setCoords(currentCoords);
+          setSelectedLocation(
+            `Lat: ${currentCoords.lat.toFixed(5)}, Lng: ${currentCoords.lng.toFixed(5)}`
+          );
+        },
+        (error) => {
+          alert("Unable to get your location: " + error.message);
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
   return (
     <div className="reports-page">
-      
+      {/* Page Header */}
       <section className="page-header">
         <div className="container">
           <h1>🐾 Submit Wildlife Report</h1>
-          <center><p>
-            Help protect wildlife by reporting sightings, unusual activities, or
-            conservation concerns.
-          </p></center>
+          <center>
+            <p>
+              Help protect wildlife by reporting sightings, unusual activities, or conservation concerns.
+            </p>
+          </center>
         </div>
       </section>
 
       <div className="container">
         <div className="form-container">
-        
+          {/* Left: Report Form */}
           <div className="form-section">
             <div className="form-header">
               <h2>📝 Report Details</h2>
             </div>
 
             <div className="form-body">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label>Report Type</label>
                   <select className="form-control">
                     <option>Illegal Activity</option>
                     <option>Injured Animal</option>
                     <option>Habitat Destruction</option>
+                    <option>Other</option>
                   </select>
                 </div>
 
@@ -44,18 +86,21 @@ function Reports() {
 
                 <div className="form-group">
                   <label>Location</label>
-                  <div className="location-inputs">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Latitude"
-                    />
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Longitude"
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Click on the map to select location"
+                    value={selectedLocation}
+                    readOnly
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={handleCurrentLocation}
+                    style={{ marginTop: "0.5rem" }}
+                  >
+                    📍 Use Current Location
+                  </button>
                 </div>
 
                 <div className="form-group">
@@ -88,17 +133,23 @@ function Reports() {
             </div>
           </div>
 
-        
+          {/* Right: Map + Guidelines */}
           <div className="form-section">
             <div className="form-header">
               <h2>🗺️ Location Preview</h2>
             </div>
+
             <div className="form-body">
               <div className="map-container">
-                <div className="map-placeholder">
-                  <h3>Map Preview</h3>
-                  <p>Location will appear here</p>
-                </div>
+                <LocationMap
+                  onLocationSelect={(coords: Coords) => {
+                    setCoords(coords);
+                    setSelectedLocation(
+                      `Lat: ${coords.lat.toFixed(5)}, Lng: ${coords.lng.toFixed(5)}`
+                    );
+                  }}
+                  initialCoords={coords}
+                />
               </div>
 
               <div className="guidelines">

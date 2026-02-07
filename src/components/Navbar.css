@@ -1,49 +1,51 @@
-/* Navbar container */
 .navbar {
-  display: flex;
-  justify-content: center; 
-  align-items: center;
-  gap: 1rem; 
-  padding: 1rem 2rem;
-  background-color: #f0f4f8; 
-  font-family: 'Poppins', sans-serif;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  border-radius: 12px;
-  position: sticky;
+  position: sticky;      /* stays at top when scrolling */
   top: 0;
   z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(90deg, #1b5e20, #2e7d32);
+  color: white;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
+/* Brand section */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.logo {
+  font-size: 1.5rem;
+}
+
+.brand-name {
+  letter-spacing: 0.5px;
+}
+
+/* Links */
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
 
 .nav-link {
-  color: #1e3a8a; 
+  color: white;
   text-decoration: none;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
 }
 
 .nav-link:hover {
-  background-color: #93c5fd; 
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-.nav-link:active {
-  transform: translateY(0);
-  background-color: #60a5fa;
-}
-
-
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .nav-link {
-    width: 100%;
-    text-align: center;
-  }
+  background: rgba(255, 255, 255, 0.2);
 }
