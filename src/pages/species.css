@@ -1,115 +1,165 @@
-/* General Layout */
 .species-container {
-  background-color: #0b0e14; /* Darker Slate */
-  color: #e2e8f0;
+  background: radial-gradient(circle at top right, #111827, #020617);
+  color: #f8fafc;
   min-height: 100vh;
-  padding: 40px 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 60px 20px;
+  font-family: 'Inter', sans-serif;
 }
 
 .species-header {
-  max-width: 1100px;
-  margin: 0 auto 40px auto;
+  max-width: 1200px;
+  margin: 0 auto;
   text-align: center;
 }
 
-.species-header h1 {
-  color: #10b981; /* Emerald Green */
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+.neon-text {
+  color: #10b981;
+  text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  font-size: 3.5rem;
+  font-weight: 900;
+  letter-spacing: -2px;
 }
 
-.search-bar {
-  width: 100%;
-  max-width: 400px;
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: 1px solid #334155;
-  background-color: #1e293b;
-  color: white;
-  outline: none;
+.subtitle {
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 0.75rem;
+  margin-top: 10px;
 }
 
-.search-bar:focus {
-  border-color: #10b981;
-}
-
-/* Grid System */
-.species-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 30px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* Card Styling */
-.species-card {
-  background-color: #1e293b;
-  border-radius: 15px;
-  overflow: hidden;
-  border: 1px solid #334155;
-  transition: transform 0.3s ease;
-}
-
-.species-card:hover {
-  transform: translateY(-5px);
-  border-color: #10b981;
-}
-
-.card-image-container {
+.search-wrapper {
   position: relative;
-  height: 200px;
+  max-width: 500px;
+  margin: 40px auto;
 }
 
-.card-image-container img {
+.scientific-input {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 14px;
+  position: relative;
+  z-index: 2;
+  outline: none;
+  font-size: 1rem;
 }
 
-.status-badge {
+.scientific-input:focus {
+  border-color: #10b981;
+}
+
+.input-glow {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 4px 10px;
-  border-radius: 5px;
-  font-size: 10px;
-  font-weight: bold;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: #10b981;
+  filter: blur(25px);
+  opacity: 0.15;
+  z-index: 1;
+}
+
+/* Grid & Cards */
+.scientific-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 60px auto;
+}
+
+.scientific-card {
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid #334155;
+  border-radius: 28px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.scientific-card:hover {
+  transform: translateY(-12px);
+  border-color: #10b981;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.card-media {
+  position: relative;
+  height: 250px;
+}
+
+.card-media img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.family-label {
+  position: absolute;
+  bottom: 20px; left: 20px;
+  background: #10b981;
+  color: #020617;
+  padding: 5px 14px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 900;
   text-transform: uppercase;
 }
 
-.status-badge.endangered { background-color: #991b1b; color: #fecaca; }
-.status-badge.vulnerable { background-color: #92400e; color: #fef3c7; }
+.card-body { padding: 30px; }
 
-.card-content {
-  padding: 20px;
-}
+.card-body h2 { font-size: 1.5rem; margin-bottom: 5px; }
 
-.scientific-name {
+.sci-tag {
+  color: #64748b;
   font-style: italic;
-  color: #94a3b8;
-  margin-bottom: 15px;
-  font-size: 0.9rem;
-}
-
-.habitat-info {
   font-size: 0.85rem;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
-.details-btn {
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.id-tag, .status-badge {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  background: #0f172a;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.spec-btn {
   width: 100%;
-  padding: 10px;
-  background-color: #334155;
+  padding: 14px;
+  background: transparent;
+  border: 1px solid #334155;
   color: white;
-  border: none;
-  border-radius: 5px;
+  border-radius: 14px;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: bold;
-  transition: background 0.2s;
+  transition: 0.3s;
 }
 
-.details-btn:hover {
-  background-color: #10b981;
+.spec-btn:hover {
+  background: #10b981;
+  color: #020617;
+  border-color: #10b981;
+}
+
+/* Loader */
+.loader-box { text-align: center; padding: 100px; }
+.pulse-loader {
+  width: 50px; height: 50px;
+  background: #10b981;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 0.2; }
+  100% { transform: scale(0.8); opacity: 0.5; }
 }

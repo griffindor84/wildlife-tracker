@@ -7,7 +7,7 @@ function Navbar() {
       <div className="nav-brand">
         {/* You can replace this emoji with an image logo later */}
         <span className="logo">🐾</span>
-        <span className="brand-name">ECO-LOG</span>
+        <span className="brand-name">Wildpath</span>
       </div>
 
       <div className="nav-links">
