@@ -1,6 +1,6 @@
 type CardProps = {
   title: string;
-  value: string;
+  value: string | number; // ✅ FIX
 };
 
 const Card = ({ title, value }: CardProps) => {
