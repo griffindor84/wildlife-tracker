@@ -1,24 +1,54 @@
+import { useState } from 'react';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import UserProfile from './pages/UserProfile';
+import type { User } from './types';
 
-import { Route, Routes } from 'react-router-dom';
-import './App.css'
-import HomePage from './pages/home';
-import Login from './pages/login';
-import Registration from './pages/registration';
-import Navbar from './components/Navbar';
+export default function App() {
+  const [currentPage, setCurrentPage] = useState<'login' | 'register' | 'profile'>('login');
+  const [user, setUser] = useState<User | null>(null);
 
-function App() {
-  
+  const handleLogin = (userData: User) => {
+    setUser(userData);
+    setCurrentPage('profile');
+  };
+
+  const handleRegister = (userData: User) => {
+    setUser(userData);
+    setCurrentPage('profile');
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setCurrentPage('login');
+  };
+
+  const handleNavigate = (page: 'login' | 'register' | 'profile') => {
+    setCurrentPage(page);
+  };
 
   return (
     <>
-    <Navbar />
-   <Routes>
-    <Route path="/" element={<HomePage />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/registration" element={<Registration />} /> 
-   </Routes>
-     </>
-  )
-}
+      {currentPage === 'login' && (
+        <Login
+          onNavigate={handleNavigate}
+          onLogin={handleLogin}
+        />
+      )}
 
-export default App
+      {currentPage === 'register' && (
+        <Register
+          onNavigate={handleNavigate}
+          onRegister={handleRegister}
+        />
+      )}
+
+      {currentPage === 'profile' && user && (
+        <UserProfile
+          user={user}
+          onLogout={handleLogout}
+        />
+      )}
+    </>
+  );
+}
