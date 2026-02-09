@@ -1,29 +1,40 @@
-import  { useState } from 'react';
+import React, { useState } from 'react';
 import './Auth.css';
+import type { User } from '../types';
 
-export default function Register({ onNavigate, onRegister }) {
-  const [formData, setFormData] = useState({
+interface RegisterProps {
+  onNavigate: (page: 'login' | 'register' | 'profile') => void;
+  onRegister: (user: User) => void;
+}
+
+export default function Register({ onNavigate, onRegister }: RegisterProps) {
+  const [formData, setFormData] = useState<{
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }>({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    
+
     // Pass the registration data to parent component
     onRegister({
       name: formData.name,
@@ -40,7 +51,7 @@ export default function Register({ onNavigate, onRegister }) {
           <h1 className="auth-title">Create Account</h1>
           <p className="auth-subtitle">Join us today</p>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="input-group">
             <label className="input-label">Full Name</label>
@@ -54,7 +65,7 @@ export default function Register({ onNavigate, onRegister }) {
               required
             />
           </div>
-          
+
           <div className="input-group">
             <label className="input-label">Email</label>
             <input
@@ -67,7 +78,7 @@ export default function Register({ onNavigate, onRegister }) {
               required
             />
           </div>
-          
+
           <div className="input-group">
             <label className="input-label">Password</label>
             <input
@@ -80,7 +91,7 @@ export default function Register({ onNavigate, onRegister }) {
               required
             />
           </div>
-          
+
           <div className="input-group">
             <label className="input-label">Confirm Password</label>
             <input
@@ -93,17 +104,17 @@ export default function Register({ onNavigate, onRegister }) {
               required
             />
           </div>
-          
+
           <button type="submit" className="submit-button">
             Create Account
           </button>
         </form>
-        
+
         <div className="auth-footer">
           <p className="footer-text">
             Already have an account?{' '}
             <span
-              onClick={() => onNavigate('Login')}
+              onClick={() => onNavigate('login')}
               className="auth-link"
             >
               Sign in
