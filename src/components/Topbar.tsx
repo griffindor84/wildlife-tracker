@@ -18,7 +18,7 @@ const Topbar = () => {
         <button onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? "☀️ Light" : "🌙 Dark"}
         </button>
-        <span>Admin</span>
+        <span> Admin: Enock</span>
         <button>Logout</button>
       </div>
     </header>
