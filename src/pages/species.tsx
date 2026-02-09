@@ -20,6 +20,20 @@ interface GBIFOccurrenceResult {
   media?: GBIFOccurrenceMedia[];
 }
 
+interface GBIFSpeciesDetail {
+  key: number;
+  rank: string;
+  taxonomicStatus: string;
+  kingdom: string;
+  phylum?: string;
+  class?: string;
+  order?: string;
+  family?: string;
+  genus?: string;
+  scientificName: string;
+  canonicalName: string;
+}
+
 // --- UI Type ---
 interface SpeciesData {
   id: number;
@@ -29,15 +43,22 @@ interface SpeciesData {
   imageUrl: string;
 }
 
-// --- Component ---
 function Species() {
   const [speciesList, setSpeciesList] = useState<SpeciesData[]>([]);
-  const [search, setSearch] = useState<string>("Lion");
+  const [search, setSearch] = useState<string>("Panthera uncia");
   const [loading, setLoading] = useState<boolean>(false);
+
   const [selected, setSelected] = useState<SpeciesData | null>(null);
+  const [reportLoading, setReportLoading] = useState<boolean>(false);
+  const [reportData, setReportData] = useState<GBIFSpeciesDetail | null>(null);
+  const [occurrenceCount, setOccurrenceCount] = useState<number>(0);
 
   // Fetch image from GBIF occurrences
-  const fetchSpeciesImage = async (scientificName: string, fallbackName: string, seed: number) => {
+  const fetchSpeciesImage = async (
+    scientificName: string,
+    fallbackName: string,
+    seed: number
+  ): Promise<string> => {
     try {
       const res = await fetch(
         `https://api.gbif.org/v1/occurrence/search?scientificName=${encodeURIComponent(
@@ -111,6 +132,29 @@ function Species() {
     return () => clearTimeout(timer);
   }, [search]);
 
+  const openFullReport = async (item: SpeciesData) => {
+    setSelected(item);
+    setReportLoading(true);
+    setReportData(null);
+
+    try {
+      const [detailRes, occRes] = await Promise.all([
+        fetch(`https://api.gbif.org/v1/species/${item.id}`),
+        fetch(`https://api.gbif.org/v1/occurrence/search?taxonKey=${item.id}&limit=0`),
+      ]);
+
+      const detailData: GBIFSpeciesDetail = await detailRes.json();
+      const occData = await occRes.json();
+
+      setReportData(detailData);
+      setOccurrenceCount(occData.count || 0);
+    } catch (err) {
+      console.error("Failed to load full report", err);
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
   return (
     <div className="species-container">
       <header className="species-header">
@@ -122,7 +166,7 @@ function Species() {
         <div className="search-wrapper">
           <input
             type="text"
-            placeholder="Search by name (e.g. Elephant, Shark)..."
+            placeholder="Search by scientific name (e.g. Panthera uncia)..."
             className="scientific-input"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -162,7 +206,7 @@ function Species() {
                   <span className="id-tag">ID: {item.id}</span>
                   <span className="status-badge">ACCEPTED</span>
                 </div>
-                <button className="spec-btn" onClick={() => setSelected(item)}>
+                <button className="spec-btn" onClick={() => openFullReport(item)}>
                   Full Analysis
                 </button>
               </div>
@@ -175,28 +219,48 @@ function Species() {
       {selected && (
         <div className="report-modal">
           <div className="report-content">
-            <button className="close-btn" onClick={() => setSelected(null)}>
+            <button
+              className="close-btn"
+              onClick={() => {
+                setSelected(null);
+                setReportData(null);
+              }}
+            >
               ✖
             </button>
 
-            <h2>{selected.name}</h2>
-            <p><strong>Scientific Name:</strong> {selected.scientificName}</p>
-            <p><strong>Family:</strong> {selected.family}</p>
-            <p><strong>GBIF ID:</strong> {selected.id}</p>
+            {reportLoading || !reportData ? (
+              <p>Loading full species report...</p>
+            ) : (
+              <>
+                <h2>{reportData.canonicalName}</h2>
+                <img src={selected.imageUrl} alt={selected.name} />
 
-            <img src={selected.imageUrl} alt={selected.name} />
+                <div className="report-grid">
+                  <p><strong>Scientific Name:</strong> {reportData.scientificName}</p>
+                  <p><strong>Rank:</strong> {reportData.rank}</p>
+                  <p><strong>Status:</strong> {reportData.taxonomicStatus}</p>
+                  <p><strong>Kingdom:</strong> {reportData.kingdom}</p>
+                  <p><strong>Phylum:</strong> {reportData.phylum || "—"}</p>
+                  <p><strong>Class:</strong> {reportData.class || "—"}</p>
+                  <p><strong>Order:</strong> {reportData.order || "—"}</p>
+                  <p><strong>Family:</strong> {reportData.family || "—"}</p>
+                  <p><strong>Genus:</strong> {reportData.genus || "—"}</p>
+                  <p><strong>GBIF Records:</strong> {occurrenceCount.toLocaleString()}</p>
+                </div>
 
-            <div className="report-section">
-              <h3>Species Report</h3>
-              <p>
-                This species is registered in the Global Biodiversity Information Facility (GBIF).
-                Data shown here is retrieved from international biodiversity records and observation datasets.
-              </p>
-              <p>
-                This module can be extended to include distribution maps, conservation status,
-                population trends, and ecological impact analysis.
-              </p>
-            </div>
+                <div className="report-section">
+                  <h3>Scientific Summary</h3>
+                  <p>
+                    This taxon is registered in the Global Biodiversity Information Facility (GBIF).
+                    The dataset currently contains <strong>{occurrenceCount.toLocaleString()}</strong> occurrence records worldwide.
+                  </p>
+                  <p>
+                    Classification data is compiled from global biodiversity authorities and curated taxonomic sources.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
