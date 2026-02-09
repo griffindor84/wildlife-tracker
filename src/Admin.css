@@ -4,38 +4,54 @@
   min-height: 100vh;
   font-family: system-ui, Arial, sans-serif;
 }
-
-/* Sidebar */
+/* Sidebar theme variables */
 :root {
-  --sidebar-bg: #14532d;
-  --sidebar-text: #e5f5eb;
+  --sidebar-bg: #f0fdf4;        /* light green background */
+  --sidebar-text: #14532d;      /* dark green text */
+  --sidebar-hover: #22c55e;
 }
 
 .dark {
-  --sidebar-bg: #020617;
-  --sidebar-text: #e5e7eb;
+  --sidebar-bg: #020617;        /* dark blue/black */
+  --sidebar-text: #e5e7eb;      /* light text */
+  --sidebar-hover: #1e293b;
 }
 
+/* Sidebar container */
+.sidebar {
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  width: 260px;
+  min-height: 100vh;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
 
+/* Title */
 .sidebar h2 {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
+  color: var(--sidebar-text);
 }
 
+/* Links */
 .sidebar nav a {
   display: block;
-  color: #e5f5eb;
-  padding: 0.5rem 0;
+  color: var(--sidebar-text);
+  padding: 0.6rem 0.8rem;
   text-decoration: none;
-  margin-bottom: 0.3rem;
-  border-radius: 4px;
+  margin-bottom: 0.4rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
 }
 
+/* Hover & active */
 .sidebar nav a.active,
 .sidebar nav a:hover {
-  background: #22c55e;
-  color: #064e3b;
+  background: var(--sidebar-hover);
+  color: #ffffff;
 }
+
 
 /* Topbar */
 .admin-content {
