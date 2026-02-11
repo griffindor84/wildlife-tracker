@@ -30,9 +30,20 @@
 
 .avatar-container {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   margin-bottom: 15px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f3f4f6;
+}
+
+.avatar-container.editable {
+  cursor: pointer;
+}
+
+.avatar-container.editable:hover .edit-avatar-overlay {
+  opacity: 1;
 }
 
 .profile-avatar {
@@ -41,6 +52,23 @@
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid #e8f5e9; /* Light green border */
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #2d7a4f;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  font-weight: 700;
+  border: 4px solid #e8f5e9;
+  border-radius: 50%;
 }
 
 .profile-name {
@@ -71,7 +99,8 @@
   gap: 8px;
 }
 
-.detail-row label {
+.detail-row label,
+.detail-label {
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -84,6 +113,7 @@
   color: #333;
   padding: 8px 0;
   border-bottom: 1px solid #eee;
+  margin: 0;
 }
 
 .bio-text {
@@ -114,6 +144,8 @@
 
 .edit-textarea {
   resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
 }
 
 .name-input {
@@ -121,6 +153,14 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: #1a4d2e;
+  padding: 10px;
+}
+
+.role-input {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+  padding: 8px;
 }
 
 /* --- Buttons --- */
@@ -131,7 +171,10 @@
   justify-content: flex-end;
 }
 
-button {
+.edit-btn,
+.save-btn,
+.cancel-btn,
+.logout-btn {
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
@@ -145,7 +188,7 @@ button {
 .edit-btn {
   background-color: #2d7a4f; /* Main Theme Green */
   color: white;
-  width: 100%;
+  flex: 1;
 }
 
 .edit-btn:hover {
@@ -158,6 +201,10 @@ button {
   flex: 2;
 }
 
+.save-btn:hover {
+  background-color: #1a4d2e;
+}
+
 .cancel-btn {
   background-color: #f3f4f6;
   color: #4b5563;
@@ -168,19 +215,85 @@ button {
   background-color: #e5e7eb;
 }
 
-/* --- Avatar Overlay (Visual Only) --- */
+.logout-btn {
+  background-color: #f3f4f6;
+  color: #dc2626;
+  flex: 1;
+  border: 2px solid #fecaca;
+}
+
+.logout-btn:hover {
+  background-color: #fee2e2;
+}
+
+/* --- Avatar Overlay --- */
 .edit-avatar-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.6);
   border-radius: 50%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: white;
   font-size: 0.8rem;
   cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  gap: 8px;
+}
+
+.camera-icon {
+  width: 32px;
+  height: 32px;
+  stroke-width: 2.5;
+}
+
+.change-photo-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* --- Status Badge --- */
+.status-active {
+  color: #2d7a4f;
+  font-weight: 600;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 640px) {
+  .profile-card {
+    padding: 30px 20px;
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+  }
+
+  .avatar-container {
+    width: 120px;
+    height: 120px;
+  }
+
+  .avatar-placeholder {
+    font-size: 48px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .edit-btn,
+  .save-btn,
+  .cancel-btn,
+  .logout-btn {
+    width: 100%;
+    flex: none;
+  }
 }
