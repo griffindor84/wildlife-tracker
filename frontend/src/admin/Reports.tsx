@@ -1,11 +1,9 @@
-import AdminLayout from "./AdminLayout";
-
 const Reports = () => {
   return (
-    <AdminLayout>
+    <div>
       <h2>Reports & Analytics</h2>
       <p>Charts and graphs will be added here in future updates.</p>
-    </AdminLayout>
+    </div>
   );
 };
 
