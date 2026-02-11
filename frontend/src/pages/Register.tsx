@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 import type { User } from '../types';
 
 interface RegisterProps {
-  onNavigate: (page: 'login' | 'register' | 'profile') => void;
   onRegister: (user: User) => void;
 }
 
-export default function Register({ onNavigate, onRegister }: RegisterProps) {
+export default function Register({ onRegister }: RegisterProps) {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<{
     name: string;
     email: string;
@@ -35,12 +37,15 @@ export default function Register({ onNavigate, onRegister }: RegisterProps) {
       return;
     }
 
-    // Pass the registration data to parent component
+    // Pass registration data to parent
     onRegister({
       name: formData.name,
       email: formData.email,
       joinDate: new Date().toLocaleDateString()
     });
+
+    // 🔥 Redirect to home page after successful registration
+    navigate("/");
   };
 
   return (
@@ -114,7 +119,7 @@ export default function Register({ onNavigate, onRegister }: RegisterProps) {
           <p className="footer-text">
             Already have an account?{' '}
             <span
-              onClick={() => onNavigate('login')}
+              onClick={() => navigate('/login')}
               className="auth-link"
             >
               Sign in
