@@ -1,19 +1,18 @@
-import type { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import "../Admin.css";
 
-type AdminLayoutProps = {
-  children: ReactNode;
-};
 
-const AdminLayout = ({ children }: AdminLayoutProps) => {
+const AdminLayout = () => {
   return (
     <div className="admin-container">
       <Sidebar />
       <div className="admin-content">
         <Topbar />
-        <main>{children}</main>
+        <main>
+          <Outlet />
+        </main>
       </div>
     </div>
   );
