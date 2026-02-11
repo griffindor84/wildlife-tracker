@@ -7,7 +7,7 @@ interface UserProfileProps {
   onLogout?: () => void;
 }
 
-export default function UserProfile({ user: propUser, onLogout: _onLogout }: UserProfileProps) {
+export default function UserProfile({ user: propUser, onLogout }: UserProfileProps) {
   // State to toggle between View and Edit modes
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -53,10 +53,16 @@ export default function UserProfile({ user: propUser, onLogout: _onLogout }: Use
     setIsEditing(false);
   };
 
+  // Handle Logout
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-card">
-
         {/* Profile Header (Avatar & Title) */}
         <div className="profile-header">
           <div className="avatar-container">
@@ -84,9 +90,7 @@ export default function UserProfile({ user: propUser, onLogout: _onLogout }: Use
           <p className="profile-role">{user.role}</p>
         </div>
 
-        
         <form className="profile-details-form" onSubmit={handleSave}>
-
           <div className="detail-row">
             <label>Email Address</label>
             {isEditing ? (
@@ -119,7 +123,6 @@ export default function UserProfile({ user: propUser, onLogout: _onLogout }: Use
 
           <div className="detail-row">
             <label>Member Since</label>
-            {/* Usually dates aren't editable, so we keep this text-only */}
             <p className="detail-text disabled-text">{user.memberSince}</p>
           </div>
 
@@ -135,12 +138,19 @@ export default function UserProfile({ user: propUser, onLogout: _onLogout }: Use
                 </button>
               </>
             ) : (
-              <button type="button" onClick={handleEditClick} className="edit-btn">
-                Edit Profile
-              </button>
+              <>
+                <button type="button" onClick={handleEditClick} className="edit-btn">
+                  Edit Profile
+                </button>
+
+                {onLogout && (
+                  <button type="button" onClick={handleLogout} className="logout-btn">
+                    Logout
+                  </button>
+                )}
+              </>
             )}
           </div>
-
         </form>
       </div>
     </div>
