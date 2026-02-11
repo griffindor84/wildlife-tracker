@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
-
+import { Route, Routes, BrowserRouter, Navigate, useNavigate } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import Reports from './pages/reports';
@@ -10,51 +9,47 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import UserProfile from './pages/UserProfile';
 import type { User } from './types';
+import Home from './pages/home';
 
-export default function App() {
-  const [currentPage, setCurrentPage] = useState<'login' | 'register' | 'profile'>('login');
+function AppRoutes() {
   const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
 
   const handleLogin = (userData: User) => {
     setUser(userData);
-    setCurrentPage('profile');
+    navigate("/"); // 🔥 Redirect to home page
   };
 
   const handleRegister = (userData: User) => {
     setUser(userData);
-    setCurrentPage('profile');
+    navigate("/"); // 🔥 Redirect to home page
   };
 
   const handleLogout = () => {
     setUser(null);
-    setCurrentPage('login');
+    navigate("/login");
   };
 
-  const handleNavigate = (page: 'login' | 'register' | 'profile') => {
-    setCurrentPage(page);
-  };
-
-  // If user is in auth flow, show Login/Register/Profile
-  if (currentPage === 'login') {
-    return <Login onNavigate={handleNavigate} onLogin={handleLogin} />;
-  }
-  if (currentPage === 'register') {
-    return <Register onNavigate={handleNavigate} onRegister={handleRegister} />;
-  }
-  if (currentPage === 'profile' && user) {
-    return <UserProfile user={user} onLogout={handleLogout} />;
-  }
-
-  // Main app with Navbar and pages
   return (
-    <BrowserRouter>
-      <Navbar />
+    <>
+      {user && <Navbar />}
+
       <Routes>
-        <Route path="/" element={<Reports />} /> {/* Reports as landing page */}
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/species" element={<Species />} />
-        <Route path="/observations" element={<Observations />} />
+        <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+        <Route path="/reports" element={user ? <Reports /> : <Navigate to="/login" />} />
+        <Route path="/species" element={user ? <Species /> : <Navigate to="/login" />} />
+        <Route path="/observations" element={user ? <Observations /> : <Navigate to="/login" />} />
+
+        <Route path="/profile" element={user ? <UserProfile user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/register" element={<Register onRegister={handleRegister} />} />
       </Routes>
-    </BrowserRouter>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <AppRoutes />
   );
 }
