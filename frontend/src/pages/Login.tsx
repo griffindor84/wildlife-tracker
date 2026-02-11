@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 import type { User } from '../types';
 
 interface LoginProps {
-  onNavigate: (page: 'login' | 'register' | 'profile') => void;
   onLogin: (user: User) => void;
 }
 
-export default function Login({ onNavigate, onLogin }: LoginProps) {
+export default function Login({ onLogin }: LoginProps) {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<{ email: string; password: string }>({
     email: '',
     password: ''
@@ -22,12 +24,16 @@ export default function Login({ onNavigate, onLogin }: LoginProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Pass the login data to parent component
+
+    // Simulate successful login
     onLogin({
       name: 'Demo User',
       email: formData.email,
       joinDate: new Date().toLocaleDateString()
     });
+
+    // 🔥 Redirect to home page
+    navigate("/");
   };
 
   return (
@@ -74,7 +80,7 @@ export default function Login({ onNavigate, onLogin }: LoginProps) {
           <p className="footer-text">
             Don't have an account?{' '}
             <span
-              onClick={() => onNavigate('register')}
+              onClick={() => navigate('/register')}
               className="auth-link"
             >
               Sign up
