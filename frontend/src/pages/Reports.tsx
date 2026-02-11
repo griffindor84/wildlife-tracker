@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LocationMap from "../components/LocationMap";
 import type { Coords } from "../components/LocationMap";
-import "./reports.css";
+import "./Reports.css";
 
 function Reports() {
   const [selectedLocation, setSelectedLocation] = useState("");
