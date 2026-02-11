@@ -24,7 +24,7 @@ const ALL_DATA: Sighting[] = [
   },
   { 
     id: 2, 
-    userId: "ian_mathai", 
+    userId: "Ian_mathai", 
     speciesName: "Black Rhino", 
     date: "2026-02-05", 
     location: "Nyeri", 
