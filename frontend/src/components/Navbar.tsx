@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import './Navbar.css';
+import '../admin/AdminLayout' // Importing sidebar styles for consistency
 
 function Navbar() {
   return (
@@ -12,7 +13,8 @@ function Navbar() {
 
       <div className="nav-links">
         <Link to="/" className="nav-link">Home</Link>
-     
+        <Link to="/admin/dashboard" className="nav-link">Admin Panel</Link>
+        <Link to="/profile" className="nav-link">Profile</Link>
         <Link to="/reports" className="nav-link">Reports</Link>
         <Link to="/species" className="nav-link">Species</Link>
         <Link to="/observations" className="nav-link">Observations</Link>

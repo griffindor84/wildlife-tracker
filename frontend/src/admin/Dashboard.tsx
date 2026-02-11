@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import AdminLayout from "./AdminLayout";
-import Card from "../../src/components/Card";
+import Card from "../components/Card"; // correct relative path
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -31,42 +30,12 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <AdminLayout>
-      <div className="dashboard-grid">
-        <Card title="Species Tracked" value={stats.species} />
-        <Card title="Animals Monitored" value={stats.animals} />
-        <Card title="Protected Zones" value={stats.zones} />
-        <Card title="Active Alerts" value={stats.alerts} />
-      </div>
-
-      {/* System Status */}
-      <section className="system-status">
-        <h3>System Status</h3>
-        <ul>
-          <li>🟢 GPS Tracking: Online</li>
-          <li>🟢 Database: Connected</li>
-          <li>🟡 Alerts Engine: Monitoring</li>
-        </ul>
-      </section>
-
-      {/* Recent Activity */}
-      <section className="activity-log">
-        <h3>Recent Activity</h3>
-        <ul>
-          <li>🐘 Elephant movement recorded – 5 mins ago</li>
-          <li>🚨 Alert triggered in Zone A – 12 mins ago</li>
-          <li>🦁 Lion location updated – 30 mins ago</li>
-          <li>👤 New ranger added – 1 hour ago</li>
-        </ul>
-      </section>
-
-      {/* Quick Actions */}
-      <section className="quick-actions">
-        <h3>Quick Actions</h3>
-        <button className="primary">➕ Add Species</button>
-        <button className="secondary">➕ Add User</button>
-      </section>
-    </AdminLayout>
+    <div className="dashboard-grid">
+      <Card title="Species Tracked" value={stats.species} />
+      <Card title="Animals Monitored" value={stats.animals} />
+      <Card title="Protected Zones" value={stats.zones} />
+      <Card title="Active Alerts" value={stats.alerts} />
+    </div>
   );
 };
 

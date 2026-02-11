@@ -1,5 +1,5 @@
 
-import "../App.css";
+import "../pages/home.css";
 import { Link } from "react-router-dom";
 
 {/* Somewhere in hero or CTA */ }
