@@ -226,7 +226,7 @@ export default function UserProfile({ user: propUser, onLogout }: UserProfilePro
             ) : (
               <>
                 <button type="button" onClick={handleEditClick} className="edit-btn">
-                  Edit Profile
+                  Edit profile
                 </button>
                 <button type="button" onClick={onLogout} className="logout-btn">
                   Logout
