@@ -1,10 +1,24 @@
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMapEvents,
+  useMap,
+} from "react-leaflet";
 import type { LatLngLiteral, LeafletMouseEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+// Type for coordinates
 export type Coords = { lat: number; lng: number };
 
+// Props for LocationMap
+export type LocationMapProps = {
+  onLocationSelect: (coords: Coords) => void;
+  initialCoords?: Coords | null;
+};
+
+// Marker component that updates when user clicks
 type ClickMarkerProps = {
   onSelect: (coords: Coords) => void;
   position: LatLngLiteral | null;
@@ -21,36 +35,27 @@ function ClickMarker({ onSelect, position }: ClickMarkerProps) {
   return position ? <Marker position={position} /> : null;
 }
 
-type LocationMapProps = {
-  onLocationSelect: (coords: Coords) => void;
-  initialCoords?: Coords | null;
-};
+// Auto-center map when initialCoords changes
+function AutoCenter({ coords }: { coords: Coords | null | undefined }) {
+  const map = useMap();
+  useEffect(() => {
+    if (coords) {
+      map.setView([coords.lat, coords.lng], map.getZoom());
+    }
+  }, [coords, map]);
+  return null;
+}
 
-function LocationMap({ onLocationSelect, initialCoords }: LocationMapProps) {
+// Main LocationMap component
+export default function LocationMap({
+  onLocationSelect,
+  initialCoords,
+}: LocationMapProps) {
   const [clickedCoords, setClickedCoords] = useState<LatLngLiteral | null>(null);
 
-  // Current marker: either the initial coords from parent or user click
-  const markerPos = initialCoords ?? clickedCoords;
+  // Marker position: initialCoords takes precedence
+  const markerPos: LatLngLiteral | null = initialCoords ?? clickedCoords;
   const center: LatLngLiteral = markerPos ?? { lat: -6.369028, lng: 34.888822 };
-
-  // Auto-center map when initialCoords changes
-  function AutoCenter() {
-    const map = useMap();
-    useEffect(() => {
-      if (initialCoords) {
-        map.setView([initialCoords.lat, initialCoords.lng], map.getZoom());
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialCoords]); // map is stable, no need to add it
-    return null;
-  }
-
-  // Call parent callback whenever marker changes
-  useEffect(() => {
-    if (markerPos) {
-      onLocationSelect({ lat: markerPos.lat, lng: markerPos.lng });
-    }
-  }, [markerPos, onLocationSelect]);
 
   return (
     <MapContainer
@@ -59,10 +64,14 @@ function LocationMap({ onLocationSelect, initialCoords }: LocationMapProps) {
       style={{ height: "300px", width: "100%", borderRadius: "10px" }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <ClickMarker position={markerPos} onSelect={setClickedCoords} />
-      <AutoCenter />
+      <ClickMarker
+        position={markerPos}
+        onSelect={(coords) => {
+          setClickedCoords(coords);
+          onLocationSelect(coords);
+        }}
+      />
+      <AutoCenter coords={initialCoords} />
     </MapContainer>
   );
 }
-
-export default LocationMap;
