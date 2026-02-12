@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Route, Routes, BrowserRouter, Navigate, useNavigate } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
-import Reports from './pages/reports';
-import Species from './pages/species';
-import Observations from './pages/observations';
+import Reports from './pages/Reports';
+import Species from './pages/Species';
+import Observations from './pages/Observations';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import UserProfile from './pages/UserProfile';
