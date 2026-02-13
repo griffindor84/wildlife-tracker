@@ -10,7 +10,7 @@ export default function AddObservation() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+//upload image is required for an observation, so we check if the user has selected a file before proceeding with form submission. If no file is selected, we alert the user to upload an image and prevent the form from being submitted.
     if (!image) {
       alert("Please upload an image for this observation.");
       return;
