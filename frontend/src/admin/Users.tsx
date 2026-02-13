@@ -8,7 +8,7 @@ const Users = () => {
     ];
 
     return (
-        <AdminLayout>
+        <div>
             <h2>Users Management</h2>
             <table className="admin-table">
                 <thead>
@@ -33,7 +33,7 @@ const Users = () => {
                     ))}
                 </tbody>
             </table>
-        </AdminLayout>
+        </div>
     );
 };
 

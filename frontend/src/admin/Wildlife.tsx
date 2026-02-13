@@ -9,7 +9,7 @@ const Wildlife = () => {
   ];
 
   return (
-    <AdminLayout>
+    <div>
       <h2>Wildlife Management</h2>
       <table className="admin-table">
         <thead>
@@ -32,7 +32,7 @@ const Wildlife = () => {
           ))}
         </tbody>
       </table>
-    </AdminLayout>
+    </div>
   );
 };
 
