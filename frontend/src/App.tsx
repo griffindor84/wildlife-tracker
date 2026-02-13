@@ -10,6 +10,9 @@ import Register from './pages/Register';
 import UserProfile from './pages/UserProfile';
 import type { User } from './types';
 import Home from './pages/home';
+import Aboutus from './pages/Aboutus';
+import AddObservation from './pages/addobservation';
+import ContactUs from './pages/contactus';
 import AdminLayout from './admin/AdminLayout';
 import Dashboard from './admin/Dashboard';
 import Settings from './admin/Settings';
@@ -42,9 +45,12 @@ function AppRoutes() {
 
       <Routes>
         <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+        <Route path="/aboutus" element={user ? <Aboutus /> : <Navigate to="/login" />} />
         <Route path="/reports" element={user ? <Reports /> : <Navigate to="/login" />} />
         <Route path="/species" element={user ? <Species /> : <Navigate to="/login" />} />
         <Route path="/observations" element={user ? <Observations /> : <Navigate to="/login" />} />
+        <Route path="/addobservation" element={user ? <AddObservation /> : <Navigate to="/login" />} />
+        <Route path="/contactus" element={user ? <ContactUs /> : <Navigate to="/login" />} />
         <Route path="/admin" element={user ? <AdminLayout /> : <Navigate to="/login" />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<Users />} />
@@ -62,8 +68,12 @@ function AppRoutes() {
   );
 }
 
+<<<<<<< HEAD
 export default function App() {
   return (
     <AppRoutes />
   );
 }
+=======
+export default App;
+>>>>>>> 1b1339915b6e02095adefe5823f407d8ac0a2010
