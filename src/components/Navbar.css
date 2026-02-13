@@ -1,0 +1,51 @@
+.navbar {
+  position: sticky;      /* stays at top when scrolling */
+  top: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(90deg, #1b5e20, #2e7d32);
+  color: white;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Brand section */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.logo {
+  font-size: 1.5rem;
+}
+
+.brand-name {
+  letter-spacing: 0.5px;
+}
+
+/* Links */
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

@@ -1,0 +1,110 @@
+.observations-container {
+  background-color: #0b0e14;
+  color: #f1f5f9;
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.observations-header {
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 20px;
+}
+
+.observations-header h1 {
+  color: #10b981; /* Emerald Green */
+  font-size: 2.2rem;
+  margin-bottom: 5px;
+}
+
+.stats-badge {
+  background: #1e293b;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: 1px solid #334155;
+  font-weight: bold;
+  color: #10b981;
+}
+
+.table-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #1e293b;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #334155;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.observations-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.observations-table th {
+  background-color: #0f172a;
+  color: #94a3b8;
+  padding: 20px;
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.obs-row {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.obs-row:hover {
+  background-color: #26334d;
+}
+
+.obs-row.active {
+  background-color: #1e293b;
+  border-left: 4px solid #10b981;
+}
+
+.observations-table td {
+  padding: 20px;
+  border-bottom: 1px solid #334155;
+  vertical-align: top;
+  font-size: 0.95rem;
+}
+
+.species-cell {
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Status Tags */
+.type-tag {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.type-tag.general-sighting { background: #064e3b; color: #6ee7b7; }
+.type-tag.injured-animal { background: #7f1d1d; color: #fecaca; }
+.type-tag.illegal-activity { background: #450a0a; color: #f87171; }
+
+/* Truncation & Expansion */
+.notes-text.truncated {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #94a3b8;
+}
+
+.notes-text.full {
+  white-space: normal;
+  color: #e2e8f0;
+  line-height: 1.6;
+}
