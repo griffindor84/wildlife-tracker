@@ -19,7 +19,7 @@ function Navbar() {
         <Link to="/reports" className="nav-link">Reports</Link>
         <Link to="/species" className="nav-link">Species</Link>
         <Link to="/observations" className="nav-link">Observations</Link>
-        <Link to="/addobservation" className="nav-link">Advertisement</Link>
+        <Link to="/addobservation" className="nav-link">Add Observation</Link>
         <Link to="/contactus" className="nav-link">Contact Us</Link>
       </div>
     </nav>
