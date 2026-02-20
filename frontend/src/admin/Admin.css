@@ -16,7 +16,7 @@
   --sidebar-hover: #22c55e;
 
   /* Card-specific tokens (avoid light-text on white-card bugs) */
-  --card-bg: #ffffff;
+--card-bg: #ffffff;
   --card-text: #1f2937;
   --card-muted: #475569;
 }
@@ -46,6 +46,11 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: system-ui, Arial, sans-serif;
+}
+body.dark {
+  --card-bg: #1e293b;
+  --card-text: #e5e7eb;
+  --card-muted: #94a3b8;
 }
 
 /* =========================
@@ -261,6 +266,18 @@ body {
 .card:hover {
   transform: translateY(-5px);
 }
+.card {
+  background: var(--card-bg) !important;
+  color: var(--card-text) !important;
+}
+
+.card-title {
+  color: var(--card-muted) !important;
+}
+
+.card-value {
+  color: var(--card-text) !important;
+}
 
 /* =========================
    TABLES
@@ -376,8 +393,13 @@ body {
   opacity: 1;
 }
 
-/* Prevent accidental fading */
-.admin-main *,
-.admin-content main * {
-  opacity: 1;
+/* Strong page headings */
+.admin-content h2,
+.admin-content h3 {
+  color: var(--text) !important;
+  opacity: 1 !important;
+}
+.admin-page-title {
+  color: var(--text);
+  font-weight: 700;
 }
