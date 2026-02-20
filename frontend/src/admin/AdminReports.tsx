@@ -1,10 +1,12 @@
-const Reports = () => {
+const AdminReports = () => {
   return (
-    <div>
-      <h2>Reports & Analytics</h2>
-      <p>Charts and graphs will be added here in future updates.</p>
+    <div className="page">
+      <h2 className="page-title">Reports & Analytics</h2>
+      <p className="page-subtitle">
+        Charts and graphs will be added here in future updates.
+      </p>
     </div>
   );
 };
 
-export default Reports;
+export default AdminReports;

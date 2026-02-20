@@ -1,13 +1,11 @@
-import AdminLayout from "./AdminLayout";
-
 const Settings = () => {
   return (
-   <div>
-    
-      <h2>Settings</h2>
-      <p>Admin can update notifications, roles, and system settings here.</p>
-    
-   </div>
+    <div className="admin-page">
+      <h2 className="admin-page-title">Settings</h2>
+      <p className="admin-page-text">
+        Admin can update notifications, roles, and system settings here.
+      </p>
+    </div>
   );
 };
 

@@ -1,13 +1,13 @@
 type CardProps = {
   title: string;
-  value: string | number; // ✅ FIX
+  value: string | number;
 };
 
 const Card = ({ title, value }: CardProps) => {
   return (
     <div className="card">
-      <h3>{title}</h3>
-      <p>{value}</p>
+      <h3 className="card-title">{title}</h3>
+      <p className="card-value">{value}</p>
     </div>
   );
 };
