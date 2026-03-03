@@ -59,7 +59,6 @@ function AppRoutes() {
           <Route path="settings" element={<Settings />} />
         </Route>
 
-
         <Route path="/profile" element={user ? <UserProfile user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/register" element={<Register onRegister={handleRegister} />} />
