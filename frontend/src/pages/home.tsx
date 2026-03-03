@@ -2,12 +2,6 @@
 import "../pages/home.css";
 import { Link } from "react-router-dom";
 
-{/* Somewhere in hero or CTA */ }
-<Link to="/admin/dashboard">
-    <button className="primary">Admin Panel</button>
-</Link>
-
-
 const Home = () => {
     return (
         <main className="home">
@@ -26,6 +20,9 @@ const Home = () => {
                     <div className="hero-buttons">
                         <button className="primary">Start Tracking</button>
                         <button className="secondary">Explore Live Map</button>
+                        <Link to="/admin/dashboard">
+                            <button className="primary">Admin Panel</button>
+                        </Link>
                     </div>
                 </div>
             </section>

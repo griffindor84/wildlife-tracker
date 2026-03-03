@@ -3,7 +3,6 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import "../Admin.css";
 
-
 const AdminLayout = () => {
   return (
     <div className="admin-container">
