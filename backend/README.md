@@ -87,8 +87,21 @@ Authorization: Bearer <jwt>
 
 ## Data storage
 
-Data is persisted in `data/db.json` – a simple JSON file.  
-For production use, replace the `middleware/db.js` read/write helpers with a real database (PostgreSQL, MongoDB, etc.).
+Data is persisted in a **SQLite** database (`data/wildlife.db`), managed with
+[better-sqlite3](https://github.com/WiseLibs/better-sqlite3).
+
+The database file is created automatically on first start.  Tables are created
+via `CREATE TABLE IF NOT EXISTS` statements in `middleware/db.js`, which also
+seeds the default users, observations, reports and wildlife rows if the tables
+are empty.
+
+The `data/*.db` files are excluded from version control via `.gitignore`.
+
+> **Upgrading to PostgreSQL / MySQL:**  
+> Swap `better-sqlite3` for the `pg` or `mysql2` package and update the
+> `middleware/db.js` connection.  All route files use standard SQL and require
+> only minor adjustments (e.g. `$1` placeholders instead of `?`).
+
 
 ## Default users
 

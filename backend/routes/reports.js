@@ -1,16 +1,22 @@
 const express = require('express');
-const { read, write } = require('../middleware/db');
+const db = require('../middleware/db');
 const { authMiddleware } = require('../middleware/auth');
 
 const router = express.Router();
 
 // GET /api/reports
 router.get('/', authMiddleware, (req, res) => {
-  const db = read();
-  // Admins see all; regular users see only their own
-  const reports = req.user.role === 'Administrator'
-    ? db.reports
-    : db.reports.filter(r => r.userId === req.user.id);
+  let rows;
+  if (req.user.role === 'Administrator') {
+    rows = db.prepare('SELECT * FROM reports').all();
+  } else {
+    rows = db.prepare('SELECT * FROM reports WHERE userId = ?').all(req.user.id);
+  }
+  // Parse coordinates JSON string back to object
+  const reports = rows.map(r => ({
+    ...r,
+    coordinates: r.coordinates ? JSON.parse(r.coordinates) : null,
+  }));
   res.json(reports);
 });
 
@@ -22,9 +28,16 @@ router.post('/', authMiddleware, (req, res) => {
     return res.status(400).json({ message: 'reportType, location and date are required' });
   }
 
-  const db = read();
-  const newReport = {
-    id: db.nextReportId++,
+  const createdAt = new Date().toISOString();
+  const coordStr = coordinates ? JSON.stringify(coordinates) : null;
+
+  const result = db.prepare(
+    `INSERT INTO reports (userId, reportType, species, location, coordinates, date, description, createdAt)
+     VALUES (?,?,?,?,?,?,?,?)`
+  ).run(req.user.id, reportType, species || '', location, coordStr, date, description || '', createdAt);
+
+  res.status(201).json({
+    id: result.lastInsertRowid,
     userId: req.user.id,
     reportType,
     species: species || '',
@@ -32,12 +45,9 @@ router.post('/', authMiddleware, (req, res) => {
     coordinates: coordinates || null,
     date,
     description: description || '',
-    createdAt: new Date().toISOString(),
-  };
-
-  db.reports.push(newReport);
-  write(db);
-  res.status(201).json(newReport);
+    createdAt,
+  });
 });
 
 module.exports = router;
+

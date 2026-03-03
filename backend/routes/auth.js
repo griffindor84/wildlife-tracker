@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { read, write } = require('../middleware/db');
+const db = require('../middleware/db');
 const { JWT_SECRET } = require('../middleware/auth');
 
 const router = express.Router();
@@ -14,28 +14,21 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ message: 'Name, email and password are required' });
   }
 
-  const db = read();
-  const existing = db.users.find(u => u.email === email);
+  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
   if (existing) {
     return res.status(409).json({ message: 'Email already registered' });
   }
 
   const hashed = await bcrypt.hash(password, 10);
-  const newUser = {
-    id: db.nextUserId++,
-    name,
-    email,
-    password: hashed,
-    role: 'Ranger',
-    joinDate: new Date().toISOString().slice(0, 10),
-  };
+  const joinDate = new Date().toISOString().slice(0, 10);
 
-  db.users.push(newUser);
-  write(db);
+  const result = db.prepare(
+    'INSERT INTO users (name, email, password, role, joinDate) VALUES (?, ?, ?, ?, ?)'
+  ).run(name, email, hashed, 'Ranger', joinDate);
 
+  const newUser = { id: result.lastInsertRowid, name, email, role: 'Ranger', joinDate };
   const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role }, JWT_SECRET, { expiresIn: '7d' });
-  const { password: _pw, ...userWithoutPw } = newUser;
-  res.status(201).json({ token, user: userWithoutPw });
+  res.status(201).json({ token, user: newUser });
 });
 
 // POST /api/auth/login
@@ -46,8 +39,7 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
-  const db = read();
-  const user = db.users.find(u => u.email === email);
+  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
   if (!user) {
     return res.status(401).json({ message: 'Invalid credentials' });
   }
@@ -63,3 +55,4 @@ router.post('/login', async (req, res) => {
 });
 
 module.exports = router;
+
