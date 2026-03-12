@@ -1,4 +1,4 @@
-import AdminLayout from "./AdminLayout";
+//import AdminLayout from "./AdminLayout";
 
 const Wildlife = () => {
   const species = [
@@ -10,7 +10,7 @@ const Wildlife = () => {
 
   return (
     <div>
-      <h2>Wildlife Management</h2>
+  <h2 className="admin-page-title">Wildlife Management</h2>
       <table className="admin-table">
         <thead>
           <tr>
