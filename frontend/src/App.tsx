@@ -68,12 +68,8 @@ function AppRoutes() {
   );
 }
 
-<<<<<<< HEAD
 export default function App() {
   return (
     <AppRoutes />
   );
 }
-=======
-export default App;
->>>>>>> 1b1339915b6e02095adefe5823f407d8ac0a2010
