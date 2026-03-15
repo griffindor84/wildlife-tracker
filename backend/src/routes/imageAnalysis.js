@@ -1,71 +1,103 @@
-const express   = require('express');
-const multer    = require('multer');
-const Anthropic = require('@anthropic-ai/sdk');
+const express = require('express');
+const multer = require('multer');
+const { HfInference } = require('@huggingface/inference');
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// POST /api/analyze-image
-// Accepts multipart/form-data with field "image"
-// Returns { labels, species, habitat, description, confidence }
+const hf = new HfInference(process.env.HF_API_KEY);
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
+
+const allowedTypes = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif'
+];
+
 router.post('/', upload.single('image'), async (req, res) => {
+
   if (!req.file) {
-    return res.status(400).json({ error: 'No image uploaded. Use field name "image".' });
+    return res.status(400).json({
+      error: 'No image uploaded. Field name must be "image".'
+    });
   }
 
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
   if (!allowedTypes.includes(req.file.mimetype)) {
-    return res.status(400).json({ error: 'Unsupported image type. Use JPEG, PNG, GIF or WEBP.' });
+    return res.status(400).json({
+      error: 'Unsupported file type. Use JPEG, PNG, WEBP, or GIF.'
+    });
   }
 
   try {
-    const base64Image = req.file.buffer.toString('base64');
 
-    const response = await client.messages.create({
-      model: 'claude-opus-4-5',
-      max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: req.file.mimetype,
-                data: base64Image,
-              },
-            },
-            {
-              type: 'text',
-              text: `You are a wildlife identification expert. Analyze this image and respond ONLY with a JSON object — no explanation, no markdown, no extra text.
-
-Use this exact structure:
-{
-  "labels": ["label1", "label2"],
-  "species": "species name or null if not identifiable",
-  "habitat": "habitat type or null",
-  "description": "one sentence description of what you see",
-  "confidence": "high | medium | low"
-}`,
-            },
-          ],
-        },
-      ],
+    const result = await hf.imageClassification({
+      model: "microsoft/resnet-50",
+      data: req.file.buffer
     });
 
-    const raw = response.content[0].text.trim();
-    const result = JSON.parse(raw);
-    res.json(result);
-  } catch (err) {
-    if (err instanceof SyntaxError) {
-      console.error('Failed to parse Claude response:', err);
-      return res.status(500).json({ error: 'Failed to parse AI response' });
+    if (!result || result.length === 0) {
+      return res.status(500).json({
+        error: "Model returned no predictions"
+      });
     }
-    console.error('Anthropic API error:', err);
-    res.status(500).json({ error: 'Image analysis failed' });
+
+    const sorted = result
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
+
+    const top = sorted[0];
+
+    const cleanLabel = (label) =>
+      label.split(',')[0].trim();
+
+    const confidence =
+      top.score > 0.7 ? "high"
+      : top.score > 0.4 ? "medium"
+      : "low";
+
+    res.json({
+
+      species: cleanLabel(top.label),
+
+      labels: sorted.map(l =>
+        cleanLabel(l.label)
+      ),
+
+      confidence,
+
+      description: `Detected ${cleanLabel(top.label)} with ${(top.score * 100).toFixed(2)}% confidence.`,
+
+      habitat: null,
+
+      raw: sorted.map(l => ({
+        label: l.label,
+        score: (l.score * 100).toFixed(2) + "%"
+      }))
+
+    });
+
+  } catch (err) {
+
+    console.error("HF ERROR:", err);
+
+    if (err.message?.includes("loading")) {
+      return res.status(503).json({
+        error: "Model loading. Try again in 20 seconds."
+      });
+    }
+
+    return res.status(500).json({
+      error: "Image analysis failed",
+      details: err.message
+    });
   }
 });
+console.log("HF KEY:", process.env.HF_API_KEY);
 
 module.exports = router;

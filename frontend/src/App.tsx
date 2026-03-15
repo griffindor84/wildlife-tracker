@@ -1,5 +1,5 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
-import { useAuth, SignedIn, SignedOut } from '@clerk/clerk-react';
+import { useAuth, SignedIn } from '@clerk/clerk-react';
 
 import Navbar from './pages/Navbar';
 import Home from './pages/home';
@@ -30,24 +30,30 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <>
+      {/* Navbar only shows on protected pages */}
       <SignedIn>
-        <Navbar />
+        <Routes>
+          <Route path="/" element={null} />
+          <Route path="/login" element={null} />
+          <Route path="/register" element={null} />
+          <Route path="*" element={<Navbar />} />
+        </Routes>
       </SignedIn>
 
       <Routes>
         {/* Public routes */}
+        <Route path="/"         element={<Home />} />
         <Route path="/login"    element={<Login />} />
         <Route path="/register" element={<Register />} />
 
         {/* Protected routes */}
-        <Route path="/"              element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/aboutus"       element={<ProtectedRoute><Aboutus /></ProtectedRoute>} />
-        <Route path="/reports"       element={<ProtectedRoute><Reports /></ProtectedRoute>} />
-        <Route path="/species"       element={<ProtectedRoute><Species /></ProtectedRoute>} />
-        <Route path="/observations"  element={<ProtectedRoute><Observations /></ProtectedRoute>} />
+        <Route path="/observations"   element={<ProtectedRoute><Observations /></ProtectedRoute>} />
         <Route path="/addobservation" element={<ProtectedRoute><AddObservation /></ProtectedRoute>} />
-        <Route path="/contactus"     element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
-        <Route path="/profile"       element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+        <Route path="/reports"        element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+        <Route path="/species"        element={<ProtectedRoute><Species /></ProtectedRoute>} />
+        <Route path="/aboutus"        element={<ProtectedRoute><Aboutus /></ProtectedRoute>} />
+        <Route path="/contactus"      element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
+        <Route path="/profile"        element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
 
         {/* Admin routes */}
         <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
@@ -58,7 +64,6 @@ export default function App() {
           <Route path="settings"  element={<Settings />} />
         </Route>
 
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
