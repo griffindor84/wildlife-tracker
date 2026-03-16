@@ -1,36 +1,31 @@
 import "../pages/home.css";
 import { Link } from "react-router-dom";
-import { SignedIn, SignedOut ,useAuth} from "@clerk/clerk-react";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
-    const { isLoaded } = useAuth();
+    const { isAuthenticated } = useAuth();
 
     return (
         <main className="home">
             <header className="home-header">
                 <div className="home-header-logo">🐾 Wildlife Tracker</div>
                 <nav className="home-header-nav">
-                    {!isLoaded ? (
-                        // Show nothing while Clerk loads
-                        <span></span>
+                    {!isAuthenticated ? (
+                        <>
+                            <Link to="/login"    className="nav-btn secondary">Sign In</Link>
+                            <Link to="/register" className="nav-btn primary">Sign Up</Link>
+                        </>
                     ) : (
                         <>
-                            <SignedOut>
-                                <Link to="/login"    className="nav-btn secondary">Sign In</Link>
-                                <Link to="/register" className="nav-btn primary">Sign Up</Link>
-                            </SignedOut>
-                            <SignedIn>
-                                <Link to="/observations"   className="nav-btn secondary">Observations</Link>
-                                <Link to="/species"        className="nav-btn secondary">Species</Link>
-                                <Link to="/reports"        className="nav-btn secondary">Reports</Link>
-                                <Link to="/admin/dashboard" className="nav-btn primary">Admin Panel</Link>
-                            </SignedIn>
+                            <Link to="/observations"    className="nav-btn secondary">Observations</Link>
+                            <Link to="/species"         className="nav-btn secondary">Species</Link>
+                            <Link to="/reports"         className="nav-btn secondary">Reports</Link>
+                            <Link to="/admin/dashboard" className="nav-btn primary">Admin Panel</Link>
                         </>
                     )}
                 </nav>
             </header>
 
-            {/* Hero */}
             <section className="hero">
                 <div className="hero-content">
                     <h2>Protect Wildlife Through Smart Tracking</h2>
@@ -39,19 +34,21 @@ const Home = () => {
                         decisions using real-time data and analytics.
                     </p>
                     <div className="hero-buttons">
-                        <SignedOut>
-                            <Link to="/register"><button className="primary">Get Started</button></Link>
-                            <Link to="/login"><button className="secondary">Sign In</button></Link>
-                        </SignedOut>
-                        <SignedIn>
-                            <Link to="/observations"><button className="primary">Start Tracking</button></Link>
-                            <Link to="/species"><button className="secondary">Explore Species</button></Link>
-                        </SignedIn>
+                        {!isAuthenticated ? (
+                            <>
+                                <Link to="/register"><button className="primary">Get Started</button></Link>
+                                <Link to="/login"><button className="secondary">Sign In</button></Link>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/observations"><button className="primary">Start Tracking</button></Link>
+                                <Link to="/species"><button className="secondary">Explore Species</button></Link>
+                            </>
+                        )}
                     </div>
                 </div>
             </section>
 
-            {/* Stats */}
             <section className="stats">
                 <Stat value="120+" label="Animals Tracked" />
                 <Stat value="15"   label="Protected Zones" />
@@ -59,7 +56,6 @@ const Home = () => {
                 <Stat value="8"    label="Species Covered" />
             </section>
 
-            {/* Features */}
             <section className="features">
                 <h2>What You Can Do</h2>
                 <p className="section-subtitle">
@@ -73,7 +69,6 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Species */}
             <section className="species">
                 <h2>Tracked Species</h2>
                 <div className="species-grid">
@@ -87,19 +82,16 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Call to Action */}
             <section className="cta">
                 <h2>Join the Mission to Protect Wildlife</h2>
                 <p>Be part of a data-driven approach to conservation and environmental protection.</p>
-                <SignedOut>
+                {!isAuthenticated ? (
                     <Link to="/register"><button className="primary large">Get Started</button></Link>
-                </SignedOut>
-                <SignedIn>
+                ) : (
                     <Link to="/observations"><button className="primary large">Go to App</button></Link>
-                </SignedIn>
+                )}
             </section>
 
-            {/* Footer */}
             <footer className="footer">
                 <p>© 2026 Wildlife Tracker | Conservation Through Technology</p>
             </footer>

@@ -1,20 +1,17 @@
 .navbar {
-  position: sticky;      /* stays at top when scrolling */
+  position: sticky;
   top: 0;
   z-index: 1000;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0.75rem 1.5rem;
   background: linear-gradient(90deg, #1b5e20, #2e7d32);
   color: white;
-
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-/* Brand section */
+/* Brand */
 .nav-brand {
   display: flex;
   align-items: center;
@@ -23,13 +20,8 @@
   font-size: 1.2rem;
 }
 
-.logo {
-  font-size: 1.5rem;
-}
-
-.brand-name {
-  letter-spacing: 0.5px;
-}
+.logo { font-size: 1.5rem; }
+.brand-name { letter-spacing: 0.5px; }
 
 /* Links */
 .nav-links {
@@ -48,4 +40,39 @@
 
 .nav-link:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+/* User section */
+.nav-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav-username {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-logout-btn {
+  padding: 0.2rem 0.6rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-logout-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: white;
+  color: white;
 }

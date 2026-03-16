@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
-import { Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth, SignedIn } from '@clerk/clerk-react';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 
 import Navbar from './pages/Navbar';
 import Home from './pages/home';
@@ -21,52 +20,35 @@ import Wildlife from './admin/Wildlife';
 import Users from './admin/Users';
 import AdminReports from './admin/AdminReports';
 
-function AuthRedirect() {
-  const { isSignedIn, isLoaded } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (!isLoaded || !isSignedIn) return;
-    if (location.pathname === '/login') {
-      navigate('/observations', { replace: true });
-    }
-    if (location.pathname === '/register') {
-      navigate('/', { replace: true });
-    }
-  }, [isSignedIn, isLoaded, location.pathname]);
-
-  return null;
-}
-
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isSignedIn, isLoaded } = useAuth();
+  const { isAuthenticated, isLoaded } = useAuth();
   if (!isLoaded) return <div className="loading">Loading...</div>;
-  if (!isSignedIn) return <Navigate to="/login" />;
+  if (!isAuthenticated) return <Navigate to="/login" />;
   return <>{children}</>;
 }
 
 export default function App() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <>
-      {/* Handles redirect after login/register */}
-      <AuthRedirect />
-
-      {/* Navbar only shows on protected pages when signed in */}
-      <SignedIn>
+      {/* Show Navbar only on protected pages */}
+      {isAuthenticated && (
         <Routes>
           <Route path="/"         element={null} />
           <Route path="/login"    element={null} />
           <Route path="/register" element={null} />
           <Route path="*"         element={<Navbar />} />
         </Routes>
-      </SignedIn>
+      )}
 
       <Routes>
+        {/* Public routes */}
         <Route path="/"         element={<Home />} />
         <Route path="/login"    element={<Login />} />
         <Route path="/register" element={<Register />} />
 
+        {/* Protected routes */}
         <Route path="/observations"   element={<ProtectedRoute><Observations /></ProtectedRoute>} />
         <Route path="/addobservation" element={<ProtectedRoute><AddObservation /></ProtectedRoute>} />
         <Route path="/reports"        element={<ProtectedRoute><Reports /></ProtectedRoute>} />
@@ -75,6 +57,7 @@ export default function App() {
         <Route path="/contactus"      element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
         <Route path="/profile"        element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
 
+        {/* Admin routes */}
         <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users"     element={<Users />} />

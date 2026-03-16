@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { useUser, useClerk } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 import './UserProfile.css';
 
 interface UserData {
@@ -12,36 +13,21 @@ interface UserData {
 }
 
 export default function UserProfile() {
-  const { user, isLoaded } = useUser();
-  const { signOut } = useClerk();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<UserData>({
-    name: '',
-    email: '',
-    role: 'Ranger',
-    about: 'Tell us about yourself...',
-    avatarUrl: '',
+    name:      user?.user_metadata?.full_name || '',
+    email:     user?.email || '',
+    role:      user?.user_metadata?.role || 'Ranger',
+    about:     user?.user_metadata?.about || 'Tell us about yourself...',
+    avatarUrl: user?.user_metadata?.avatar_url || '',
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Sync Clerk user into formData once loaded
-  React.useEffect(() => {
-    if (isLoaded && user) {
-      setFormData({
-        name:      user.fullName || '',
-        email:     user.primaryEmailAddress?.emailAddress || '',
-        role:      (user.publicMetadata?.role as string) || 'Ranger',
-        about:     (user.publicMetadata?.about as string) || 'Tell us about yourself...',
-        avatarUrl: user.imageUrl || '',
-      });
-    }
-  }, [isLoaded, user]);
-
-  if (!isLoaded) return <div className="loading">Loading profile...</div>;
-  if (!user)     return <div className="loading">No user found.</div>;
+  if (!user) return <div className="loading">Loading profile...</div>;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -52,50 +38,46 @@ export default function UserProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) { alert('Please select an image file'); return; }
-    if (file.size > 5 * 1024 * 1024)    { alert('File size must be less than 5MB'); return; }
+    if (file.size > 5 * 1024 * 1024) { alert('File size must be less than 5MB'); return; }
     const reader = new FileReader();
     reader.onloadend = () => setFormData({ ...formData, avatarUrl: reader.result as string });
     reader.readAsDataURL(file);
   };
 
-  const handleAvatarClick = () => {
-    if (isEditing) fileInputRef.current?.click();
-  };
-
-  const handleEditClick = () => setIsEditing(true);
-  const handleCancel    = () => setIsEditing(false);
-
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await user.update({ firstName: formData.name.split(' ')[0], lastName: formData.name.split(' ').slice(1).join(' ') });
+      await supabase.auth.updateUser({
+        data: {
+          full_name: formData.name,
+          role:      formData.role,
+          about:     formData.about,
+        }
+      });
       setIsEditing(false);
     } catch (err) {
       console.error('Failed to update profile:', err);
     }
   };
 
-  const handleLogout = () => {
-    signOut(() => navigate('/login'));
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
   };
-
-  const displayName  = formData.name  || user.fullName  || 'User';
-  const displayEmail = formData.email || user.primaryEmailAddress?.emailAddress || '';
 
   return (
     <div className="profile-container">
       <div className="profile-card">
-        {/* Avatar */}
         <div className="profile-header">
           <div
             className={`avatar-container ${isEditing ? 'editable' : ''}`}
-            onClick={handleAvatarClick}
+            onClick={() => isEditing && fileInputRef.current?.click()}
           >
             {formData.avatarUrl ? (
               <img src={formData.avatarUrl} alt="Profile" className="profile-avatar" />
             ) : (
               <div className="avatar-placeholder">
-                {displayName.charAt(0).toUpperCase()}
+                {formData.name.charAt(0).toUpperCase()}
               </div>
             )}
             {isEditing && (
@@ -119,7 +101,7 @@ export default function UserProfile() {
               <input type="text" name="name" value={formData.name}
                 onChange={handleChange} className="edit-input name-input"
                 placeholder="Enter your name" required />
-            ) : displayName}
+            ) : formData.name}
           </h2>
 
           <p className="profile-role">
@@ -131,11 +113,10 @@ export default function UserProfile() {
           </p>
         </div>
 
-        {/* Details Form */}
         <form className="profile-details-form" onSubmit={handleSave}>
           <div className="detail-row">
             <label className="detail-label">Email Address</label>
-            <p className="detail-text disabled-text">{displayEmail}</p>
+            <p className="detail-text disabled-text">{formData.email}</p>
           </div>
 
           <div className="detail-row">
@@ -152,19 +133,19 @@ export default function UserProfile() {
           <div className="detail-row">
             <label className="detail-label">Member Since</label>
             <p className="detail-text disabled-text">
-              {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
+              {user.created_at ? new Date(user.created_at).toLocaleDateString() : '—'}
             </p>
           </div>
 
           <div className="button-group">
             {isEditing ? (
               <>
-                <button type="button" onClick={handleCancel} className="cancel-btn">Cancel</button>
+                <button type="button" onClick={() => setIsEditing(false)} className="cancel-btn">Cancel</button>
                 <button type="submit" className="save-btn">Save Changes</button>
               </>
             ) : (
               <>
-                <button type="button" onClick={handleEditClick} className="edit-btn">Edit Profile</button>
+                <button type="button" onClick={() => setIsEditing(true)} className="edit-btn">Edit Profile</button>
                 <button type="button" onClick={handleLogout} className="logout-btn">Logout</button>
               </>
             )}

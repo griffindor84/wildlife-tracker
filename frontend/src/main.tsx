@@ -1,12 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { ClerkProvider } from '@clerk/clerk-react';
+import { AuthProvider } from './context/AuthContext';
 import 'leaflet/dist/leaflet.css';
 import App from './App';
-
-const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-if (!publishableKey) throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY');
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
@@ -14,12 +11,9 @@ if (!rootElement) throw new Error('Root element not found');
 createRoot(rootElement).render(
   <StrictMode>
     <BrowserRouter>
-      <ClerkProvider
-        publishableKey={publishableKey}>
-        
-      
+      <AuthProvider>
         <App />
-      </ClerkProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 );
