@@ -14,3 +14,5 @@ const pool = new Pool(
         password: process.env.DB_PASSWORD || 'yourpassword',
       }
 );
+
+module.exports = { pool };
