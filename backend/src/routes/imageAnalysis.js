@@ -98,6 +98,6 @@ router.post('/', upload.single('image'), async (req, res) => {
     });
   }
 });
-console.log("HF KEY:", process.env.HF_API_KEY);
+
 
 module.exports = router;
