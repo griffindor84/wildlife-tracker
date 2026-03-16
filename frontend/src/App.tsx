@@ -21,8 +21,23 @@ import Wildlife from './admin/Wildlife';
 import Users from './admin/Users';
 import AdminReports from './admin/AdminReports';
 
+function AuthRedirect() {
+  const { isSignedIn, isLoaded } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+    if (location.pathname === '/login') {
+      navigate('/observations', { replace: true });
+    }
+    if (location.pathname === '/register') {
+      navigate('/', { replace: true });
+    }
+  }, [isSignedIn, isLoaded, location.pathname]);
 
+  return null;
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isSignedIn, isLoaded } = useAuth();
