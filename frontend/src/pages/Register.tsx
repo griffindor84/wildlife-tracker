@@ -1,11 +1,21 @@
-import { SignUp } from '@clerk/clerk-react';
+import { SignUp, useAuth } from '@clerk/clerk-react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 export default function Register() {
+  const { isSignedIn, isLoaded } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      navigate('/', { replace: true });
+    }
+  }, [isSignedIn, isLoaded]);
+
   return (
     <div className="auth-container">
       <div className="auth-bg" />
-
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">
@@ -14,12 +24,10 @@ export default function Register() {
           <h1 className="auth-title">Welcome to Wildlife Tracker</h1>
           <h2 className="auth-subtitle">Create your account</h2>
         </div>
-
         <SignUp
           routing="path"
           path="/register"
           signInUrl="/login"
-          afterSignUpUrl="/"
           appearance={{
             elements: {
               rootBox: 'clerk-root',
@@ -33,8 +41,6 @@ export default function Register() {
             },
           }}
         />
-
-        
       </div>
     </div>
   );

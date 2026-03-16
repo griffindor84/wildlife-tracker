@@ -1,43 +1,32 @@
 import "../pages/home.css";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
+import { SignedIn, SignedOut ,useAuth} from "@clerk/clerk-react";
 
 const Home = () => {
-    const { isSignedIn } = useAuth();
-    const navigate = useNavigate();
-
-    const handleGetStarted = () => {
-        if (isSignedIn) {
-            navigate("/observations");
-        } else {
-            navigate("/register");
-        }
-    };
-
-    const handleStartTracking = () => {
-        if (isSignedIn) {
-            navigate("/observations");
-        } else {
-            navigate("/login");
-        }
-    };
+    const { isLoaded } = useAuth();
 
     return (
         <main className="home">
-
-            {/* Public Navbar */}
             <header className="home-header">
-                <div className="home-header-logo">
-                    🐾 Wildlife Tracker
-                </div>
+                <div className="home-header-logo">🐾 Wildlife Tracker</div>
                 <nav className="home-header-nav">
-                    <SignedOut>
-                        <Link to="/login" className="nav-btn secondary">Sign In</Link>
-                        <Link to="/register" className="nav-btn primary">Sign Up</Link>
-                    </SignedOut>
-                    <SignedIn>
-                        <Link to="/observations" className="nav-btn primary">Go to App</Link>
-                    </SignedIn>
+                    {!isLoaded ? (
+                        // Show nothing while Clerk loads
+                        <span></span>
+                    ) : (
+                        <>
+                            <SignedOut>
+                                <Link to="/login"    className="nav-btn secondary">Sign In</Link>
+                                <Link to="/register" className="nav-btn primary">Sign Up</Link>
+                            </SignedOut>
+                            <SignedIn>
+                                <Link to="/observations"   className="nav-btn secondary">Observations</Link>
+                                <Link to="/species"        className="nav-btn secondary">Species</Link>
+                                <Link to="/reports"        className="nav-btn secondary">Reports</Link>
+                                <Link to="/admin/dashboard" className="nav-btn primary">Admin Panel</Link>
+                            </SignedIn>
+                        </>
+                    )}
                 </nav>
             </header>
 
@@ -49,16 +38,14 @@ const Home = () => {
                         Track animal movements, monitor habitats, and support conservation
                         decisions using real-time data and analytics.
                     </p>
-
                     <div className="hero-buttons">
-                        <button className="primary" onClick={handleStartTracking}>
-                            Start Tracking
-                        </button>
-                        <button className="secondary">Explore Live Map</button>
+                        <SignedOut>
+                            <Link to="/register"><button className="primary">Get Started</button></Link>
+                            <Link to="/login"><button className="secondary">Sign In</button></Link>
+                        </SignedOut>
                         <SignedIn>
-                            <Link to="/admin/dashboard">
-                                <button className="primary">Admin Panel</button>
-                            </Link>
+                            <Link to="/observations"><button className="primary">Start Tracking</button></Link>
+                            <Link to="/species"><button className="secondary">Explore Species</button></Link>
                         </SignedIn>
                     </div>
                 </div>
@@ -79,10 +66,10 @@ const Home = () => {
                     Powerful tools designed for rangers, researchers, and conservationists
                 </p>
                 <div className="feature-grid">
-                    <Feature icon="🗺️" title="Live Tracking"        description="Monitor animal locations in real time on an interactive map." />
-                    <Feature icon="🐘" title="Species Management"   description="Organize, monitor, and analyze different wildlife species." />
-                    <Feature icon="📊" title="Reports & Insights"   description="Generate movement and behavior reports for research." />
-                    <Feature icon="🚨" title="Alerts & Safety"      description="Receive alerts for unusual movements or danger zones." />
+                    <Feature icon="🗺️" title="Live Tracking"      description="Monitor animal locations in real time on an interactive map." />
+                    <Feature icon="🐘" title="Species Management" description="Organize, monitor, and analyze different wildlife species." />
+                    <Feature icon="📊" title="Reports & Insights" description="Generate movement and behavior reports for research." />
+                    <Feature icon="🚨" title="Alerts & Safety"    description="Receive alerts for unusual movements or danger zones." />
                 </div>
             </section>
 
@@ -103,12 +90,13 @@ const Home = () => {
             {/* Call to Action */}
             <section className="cta">
                 <h2>Join the Mission to Protect Wildlife</h2>
-                <p>
-                    Be part of a data-driven approach to conservation and environmental protection.
-                </p>
-                <button className="primary large" onClick={handleGetStarted}>
-                    Get Started
-                </button>
+                <p>Be part of a data-driven approach to conservation and environmental protection.</p>
+                <SignedOut>
+                    <Link to="/register"><button className="primary large">Get Started</button></Link>
+                </SignedOut>
+                <SignedIn>
+                    <Link to="/observations"><button className="primary large">Go to App</button></Link>
+                </SignedIn>
             </section>
 
             {/* Footer */}
@@ -120,8 +108,6 @@ const Home = () => {
 };
 
 export default Home;
-
-/* ── Sub-components ── */
 
 type FeatureProps = { icon: string; title: string; description: string };
 const Feature = ({ icon, title, description }: FeatureProps) => (

@@ -13,10 +13,13 @@ if (!rootElement) throw new Error('Root element not found');
 
 createRoot(rootElement).render(
   <StrictMode>
-    <ClerkProvider publishableKey={publishableKey}>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ClerkProvider
+        publishableKey={publishableKey}>
+        
+      
         <App />
-      </BrowserRouter>
-    </ClerkProvider>
+      </ClerkProvider>
+    </BrowserRouter>
   </StrictMode>
 );

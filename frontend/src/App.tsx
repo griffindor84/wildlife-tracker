@@ -1,4 +1,5 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth, SignedIn } from '@clerk/clerk-react';
 
 import Navbar from './pages/Navbar';
@@ -20,6 +21,9 @@ import Wildlife from './admin/Wildlife';
 import Users from './admin/Users';
 import AdminReports from './admin/AdminReports';
 
+
+
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isSignedIn, isLoaded } = useAuth();
   if (!isLoaded) return <div className="loading">Loading...</div>;
@@ -30,23 +34,22 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <>
-      {/* Navbar only shows on protected pages */}
+   
+
       <SignedIn>
         <Routes>
-          <Route path="/" element={null} />
-          <Route path="/login" element={null} />
+          <Route path="/"         element={null} />
+          <Route path="/login"    element={null} />
           <Route path="/register" element={null} />
-          <Route path="*" element={<Navbar />} />
+          <Route path="*"         element={<Navbar />} />
         </Routes>
       </SignedIn>
 
       <Routes>
-        {/* Public routes */}
         <Route path="/"         element={<Home />} />
         <Route path="/login"    element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Protected routes */}
         <Route path="/observations"   element={<ProtectedRoute><Observations /></ProtectedRoute>} />
         <Route path="/addobservation" element={<ProtectedRoute><AddObservation /></ProtectedRoute>} />
         <Route path="/reports"        element={<ProtectedRoute><Reports /></ProtectedRoute>} />
@@ -55,7 +58,6 @@ export default function App() {
         <Route path="/contactus"      element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
         <Route path="/profile"        element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
 
-        {/* Admin routes */}
         <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users"     element={<Users />} />
