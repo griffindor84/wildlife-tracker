@@ -1,237 +1,89 @@
-/* =========================
-   THEME TOKENS
-   ========================= */
-:root {
-  --bg: #f4f7f5;
-  --card: #ffffff;
-  --text: #1f2937;
-  --muted: #475569;
-  --border: #d1d5db;
-
-  --accent: #22c55e;
-  --on-accent: #052e16;
-
-  --sidebar-bg: #f0fdf4;
-  --sidebar-text: #14532d;
-  --sidebar-hover: #22c55e;
-
-  /* Card-specific tokens (avoid light-text on white-card bugs) */
---card-bg: #ffffff;
-  --card-text: #1f2937;
-  --card-muted: #475569;
-}
-
-body.dark,
-.dark {
-  --bg: #0f172a;
-  --card: #1e293b;
-  --text: #e5e7eb;
-  --muted: #94a3b8;
-  --border: #334155;
-
-  --accent: #22c55e;
-  --on-accent: #052e16;
-
-  --sidebar-bg: #020617;
-  --sidebar-text: #e5e7eb;
-  --sidebar-hover: #1e293b;
-
-  --card-bg: #1e293b;
-  --card-text: #e5e7eb;
-  --card-muted: #cbd5e1;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, Arial, sans-serif;
-}
-body.dark {
-  --card-bg: #1e293b;
-  --card-text: #e5e7eb;
-  --card-muted: #94a3b8;
-}
-
-/* =========================
-   LAYOUT
-   ========================= */
+/* Admin Panel Layout */
 .admin-container {
   display: flex;
   min-height: 100vh;
+  font-family: system-ui, Arial, sans-serif;
+}
+/* Sidebar theme variables */
+:root {
+  --sidebar-bg: #f0fdf4;        /* light green background */
+  --sidebar-text: #14532d;      /* dark green text */
+  --sidebar-hover: #22c55e;
 }
 
-.admin-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+.dark {
+  --sidebar-bg: #020617;        /* dark blue/black */
+  --sidebar-text: #e5e7eb;      /* light text */
+  --sidebar-hover: #1e293b;
 }
 
-.admin-content main,
-.admin-main {
-  background: var(--bg);
-  min-height: 100vh;
-}
-
-/* =========================
-   TOPBAR
-   ========================= */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: var(--card);
-  color: var(--text);
-  border-bottom: 1px solid var(--border);
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.topbar-right span {
-  font-weight: 500;
-  color: var(--muted);
-}
-
-.topbar-right button {
-  padding: 0.4rem 0.8rem;
-  background: var(--accent);
-  color: var(--on-accent);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.collapse-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-/* =========================
-   SIDEBAR (NORMAL)
-   ========================= */
+/* Sidebar container */
 .sidebar {
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text);
   width: 260px;
   min-height: 100vh;
   padding: 1.5rem;
-  border-right: 1px solid var(--border);
   transition: all 0.3s ease;
 }
 
+/* Title */
 .sidebar h2 {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   color: var(--sidebar-text);
 }
 
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* Links */
+.sidebar nav a {
+  display: block;
   color: var(--sidebar-text);
   padding: 0.6rem 0.8rem;
   text-decoration: none;
-  border-radius: 8px;
+  margin-bottom: 0.4rem;
+  border-radius: 6px;
   transition: background 0.2s ease;
 }
 
-.sidebar-link.active,
-.sidebar-link:hover {
+/* Hover & active */
+.sidebar nav a.active,
+.sidebar nav a:hover {
   background: var(--sidebar-hover);
   color: #ffffff;
 }
 
-.sidebar-icon {
-  width: 28px;
-  min-width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  font-size: 18px;
+
+/* Topbar */
+.admin-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.sidebar-label {
-  white-space: nowrap;
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #38a881;
+  border-bottom: 1px solid #d1d5db;
 }
 
-/* =========================
-   SIDEBAR (COLLAPSED)
-   ========================= */
-.admin-container.collapsed .sidebar {
-  width: 70px;
-  padding: 1rem 0.5rem;
+.topbar-right span {
+  margin-right: 1rem;
+  font-weight: 500;
 }
 
-.admin-container.collapsed .sidebar h2 {
-  text-align: center;
-  font-size: 1rem;
-  margin-bottom: 1rem;
+.topbar-right button {
+  padding: 0.4rem 0.8rem;
+  background: #22c55e;
+  color: #064e3b;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-/* Center icons only */
-.admin-container.collapsed .sidebar-link {
-  justify-content: center;
-  padding: 0.7rem 0;
-}
-
-.admin-container.collapsed .sidebar-icon {
-  font-size: 20px;
-  width: 32px;
-  height: 32px;
-}
-
-/* Hide only the label (NOT the icon!) */
-.admin-container.collapsed .sidebar-label {
-  display: none;
-}
-
-/* =========================
-   MOBILE SIDEBAR (SLIDE IN)
-   ========================= */
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    left: -260px;
-    top: 0;
-    height: 100vh;
-    z-index: 1000;
-    transition: left 0.25s ease;
-  }
-
-  .sidebar-open .sidebar {
-    left: 0;
-  }
-
-  .topbar {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .admin-table {
-    font-size: 0.85rem;
-  }
-}
-
-/* =========================
-   DASHBOARD CARDS
-   ========================= */
+/* Dashboard Cards */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -240,96 +92,71 @@ body.dark {
 }
 
 .card {
-  background: var(--card-bg);
-  color: var(--card-text);
+  background: #fff;
   padding: 1.5rem;
   border-radius: 10px;
-  border: 1px solid var(--border);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   text-align: center;
   transition: transform 0.2s;
 }
 
-.card-title {
-  color: var(--card-muted);
-  font-weight: 700;
-  margin: 0 0 0.4rem 0;
-}
-
-.card-value {
-  color: var(--card-text);
-  font-size: 1.6rem;
-  font-weight: 800;
-  margin: 0;
-}
-
 .card:hover {
   transform: translateY(-5px);
 }
-.card {
-  background: var(--card-bg) !important;
-  color: var(--card-text) !important;
-}
 
-.card-title {
-  color: var(--card-muted) !important;
-}
-
-.card-value {
-  color: var(--card-text) !important;
-}
-
-/* =========================
-   TABLES
-   ========================= */
+/* Tables */
 .admin-table {
   width: 100%;
   border-collapse: collapse;
   margin: 2rem 0;
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
 }
 
 .admin-table th,
 .admin-table td {
   padding: 0.8rem 1rem;
-  border: 1px solid var(--border);
+  border: 1px solid #d1d5db;
   text-align: left;
-  color: var(--text);
-}
-
-/* =========================
-   BUTTONS
-   ========================= */
-.edit-btn,
-.delete-btn {
-  height: 36px;
-  min-width: 92px;
-  padding: 0 12px;
-  font-size: 13px;
-  font-weight: 600;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-grid;
-  place-items: center;
 }
 
 .edit-btn {
-  background-color: var(--accent);
-  color: var(--on-accent);
+  padding: 0.3rem 0.6rem;
+  background: #22c55e;
+  color: #064e3b;
+  border: none;
+  border-radius: 5px;
+  margin-right: 0.5rem;
 }
 
 .delete-btn {
+  padding: 0.3rem 0.6rem;
   background: #ef4444;
   color: white;
+  border: none;
+  border-radius: 5px;
 }
 
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+    padding: 1rem 0.5rem;
+    font-size: 0.9rem;
+  }
 
-/* =========================
-   EXTRA SECTIONS
-   ========================= */
+  .sidebar h2 {
+    display: none;
+  }
+
+  .admin-table {
+    font-size: 0.85rem;
+  }
+
+  .topbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+/* Dashboard Sections */
 .system-status,
 .activity-log,
 .quick-actions {
@@ -337,9 +164,7 @@ body.dark {
   padding: 1.5rem;
   border-radius: 10px;
   background: var(--card);
-  border: 1px solid var(--border);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-  color: var(--text);
 }
 
 .system-status ul,
@@ -360,9 +185,10 @@ body.dark {
   cursor: pointer;
 }
 
+/* Buttons */
 .primary {
   background: var(--accent);
-  color: var(--on-accent);
+  color: #064e3b;
 }
 
 .secondary {
@@ -370,36 +196,35 @@ body.dark {
   border: 1px solid var(--accent);
   color: var(--accent);
 }
+/* ===== DARK MODE ===== */
+:root {
+  --bg: #f4f7f5;
+  --card: #ffffff;
+  --text: #1f2937;
+  --accent: #22c55e;
+}
 
-/* =========================
-   PAGE TEXT VISIBILITY
-   ========================= */
-.page,
-.admin-page {
+.dark {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #e5e7eb;
+  --accent: #22c55e;
+}
+
+body {
+  background: var(--bg);
   color: var(--text);
 }
 
-.page-title,
-.admin-page-title {
-  color: var(--text);
-  margin: 0 0 0.5rem 0;
-  opacity: 1;
+.admin-content main {
+  background: var(--bg);
+  min-height: 100vh;
 }
 
-.page-subtitle,
-.admin-page-text {
-  color: var(--muted);
-  margin: 0;
-  opacity: 1;
-}
-
-/* Strong page headings */
-.admin-content h2,
-.admin-content h3 {
-  color: var(--text) !important;
-  opacity: 1 !important;
-}
-.admin-page-title {
+.card,
+.sidebar,
+.topbar,
+.admin-table {
+  background: var(--card);
   color: var(--text);
-  font-weight: 700;
 }

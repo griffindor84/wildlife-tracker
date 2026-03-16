@@ -29,6 +29,7 @@ export default function Login() {
           routing="path"
           path="/login"
           signUpUrl="/register"
+          forceRedirectUrl="/observations"
           appearance={{
             elements: {
               rootBox: 'clerk-root',
