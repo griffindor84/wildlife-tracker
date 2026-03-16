@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth, SignedIn } from '@clerk/clerk-react';
 
@@ -49,8 +49,10 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <>
-   
+      {/* Handles redirect after login/register */}
+      <AuthRedirect />
 
+      {/* Navbar only shows on protected pages when signed in */}
       <SignedIn>
         <Routes>
           <Route path="/"         element={null} />
