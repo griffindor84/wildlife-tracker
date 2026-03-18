@@ -20,10 +20,11 @@ import Wildlife from './admin/Wildlife';
 import Users from './admin/Users';
 import AdminReports from './admin/AdminReports';
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoaded } = useAuth();
+function ProtectedRoute({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) {
+  const { isAuthenticated, isLoaded, isAdmin } = useAuth();
   if (!isLoaded) return <div className="loading">Loading...</div>;
   if (!isAuthenticated) return <Navigate to="/login" />;
+  if (adminOnly && !isAdmin) return <Navigate to="/" />;
   return <>{children}</>;
 }
 
@@ -32,7 +33,6 @@ export default function App() {
 
   return (
     <>
-      {/* Show Navbar only on protected pages */}
       {isAuthenticated && (
         <Routes>
           <Route path="/"         element={null} />
@@ -43,12 +43,10 @@ export default function App() {
       )}
 
       <Routes>
-        {/* Public routes */}
         <Route path="/"         element={<Home />} />
         <Route path="/login"    element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Protected routes */}
         <Route path="/observations"   element={<ProtectedRoute><Observations /></ProtectedRoute>} />
         <Route path="/addobservation" element={<ProtectedRoute><AddObservation /></ProtectedRoute>} />
         <Route path="/reports"        element={<ProtectedRoute><Reports /></ProtectedRoute>} />
@@ -57,8 +55,8 @@ export default function App() {
         <Route path="/contactus"      element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
         <Route path="/profile"        element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
 
-        {/* Admin routes */}
-        <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+        {/* Admin only routes */}
+        <Route path="/admin" element={<ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users"     element={<Users />} />
           <Route path="wildlife"  element={<Wildlife />} />

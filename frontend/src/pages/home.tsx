@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, isAdmin } = useAuth();
 
     return (
         <main className="home">
@@ -17,10 +17,12 @@ const Home = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/observations"    className="nav-btn secondary">Observations</Link>
-                            <Link to="/species"         className="nav-btn secondary">Species</Link>
-                            <Link to="/reports"         className="nav-btn secondary">Reports</Link>
-                            <Link to="/admin/dashboard" className="nav-btn primary">Admin Panel</Link>
+                            <Link to="/observations" className="nav-btn secondary">Observations</Link>
+                            <Link to="/species"      className="nav-btn secondary">Species</Link>
+                            <Link to="/reports"      className="nav-btn secondary">Reports</Link>
+                            {isAdmin && (
+                                <Link to="/admin/dashboard" className="nav-btn primary">Admin Panel</Link>
+                            )}
                         </>
                     )}
                 </nav>
@@ -29,10 +31,7 @@ const Home = () => {
             <section className="hero">
                 <div className="hero-content">
                     <h2>Protect Wildlife Through Smart Tracking</h2>
-                    <p>
-                        Track animal movements, monitor habitats, and support conservation
-                        decisions using real-time data and analytics.
-                    </p>
+                    <p>Track animal movements, monitor habitats, and support conservation decisions using real-time data and analytics.</p>
                     <div className="hero-buttons">
                         {!isAuthenticated ? (
                             <>
@@ -58,9 +57,7 @@ const Home = () => {
 
             <section className="features">
                 <h2>What You Can Do</h2>
-                <p className="section-subtitle">
-                    Powerful tools designed for rangers, researchers, and conservationists
-                </p>
+                <p className="section-subtitle">Powerful tools designed for rangers, researchers, and conservationists</p>
                 <div className="feature-grid">
                     <Feature icon="🗺️" title="Live Tracking"      description="Monitor animal locations in real time on an interactive map." />
                     <Feature icon="🐘" title="Species Management" description="Organize, monitor, and analyze different wildlife species." />

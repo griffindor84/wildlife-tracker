@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Species.css";
+import api from '../api/axios';
 
 // --- GBIF Types ---
 interface GBIFSuggestResult {
@@ -52,6 +53,38 @@ function Species() {
   const [reportLoading, setReportLoading] = useState<boolean>(false);
   const [reportData, setReportData] = useState<GBIFSpeciesDetail | null>(null);
   const [occurrenceCount, setOccurrenceCount] = useState<number>(0);
+
+
+  const [trackedSpecies, setTrackedSpecies] = useState<any[]>([]);
+useEffect(() => {
+  api.get('/wildlife').then(res => setTrackedSpecies(res.data)).catch(console.error);
+}, []);
+
+{/* Tracked Species from Database */}
+{trackedSpecies.length > 0 && (
+  <div className="tracked-section">
+    <h2 className="tracked-title">🐾 Our Tracked Species</h2>
+    <div className="tracked-grid">
+      {trackedSpecies.map((animal) => (
+        <div key={animal.id} className="tracked-card">
+          <div className="tracked-body">
+            <h3>{animal.name}</h3>
+            <p className="tracked-scientific">{animal.species || '—'}</p>
+            <div className="tracked-meta">
+              <span className="tracked-habitat">🌍 {animal.habitat || 'Unknown'}</span>
+              <span className={`tracked-status ${animal.status?.toLowerCase().replace(/\s+/g, '-')}`}>
+                {animal.status || 'Unknown'}
+              </span>
+            </div>
+            {animal.description && (
+              <p className="tracked-desc">{animal.description}</p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
   // Fetch image from GBIF occurrences
   const fetchSpeciesImage = async (

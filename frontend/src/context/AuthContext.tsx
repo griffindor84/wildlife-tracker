@@ -8,6 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoaded: boolean;
   isAdmin: boolean;
+  role: string;
   signOut: () => Promise<void>;
 }
 
@@ -17,19 +18,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser]       = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [role, setRole]       = useState('Ranger');
+
+  const fetchUserRole = async (supabaseId: string) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/role/${supabaseId}`
+      );
+      const data = await res.json();
+      if (data.role) setRole(data.role);
+    } catch (err) {
+      console.error('Failed to fetch role:', err);
+    }
+  };
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) fetchUserRole(session.user.id);
       setIsLoaded(true);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) fetchUserRole(session.user.id);
+      else setRole('Ranger');
       setIsLoaded(true);
     });
 
@@ -38,6 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    setRole('Ranger');
   };
 
   return (
@@ -46,7 +62,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       session,
       isAuthenticated: !!user,
       isLoaded,
-      isAdmin: user?.user_metadata?.role === 'Administrator',
+      isAdmin: role === 'Administrator',
+      role,
       signOut,
     }}>
       {children}
