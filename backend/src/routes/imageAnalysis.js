@@ -9,7 +9,7 @@ const upload = multer({
 
 const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const HF_API_KEY   = process.env.HF_API_KEY;
-const HF_URL       = 'https://api-inference.huggingface.co/models/google/vit-base-patch16-224';
+const HF_URL       = 'https://router.huggingface.co/hf-inference/models/google/vit-base-patch16-224';
 
 router.post('/', upload.single('image'), async (req, res) => {
   if (!req.file) {
