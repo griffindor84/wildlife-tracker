@@ -59,28 +59,33 @@ export default function AddObservation() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSubmitting(true);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError('');
+  setSubmitting(true);
 
-    try {
-      await api.post('/observations', {
-        wildlife_id:  wildlifeId || null,
-        location,
-        notes,
-        observed_at: date ? new Date(date).toISOString() : new Date().toISOString(),
-      });
+  try {
+    // Include AI detected species in notes
+    const fullNotes = species 
+      ? `Species detected: ${species}\n\n${notes}` 
+      : notes;
 
-      alert("Observation added successfully!");
-      navigate('/observations');
-    } catch (err) {
-      setError('Failed to add observation. Please try again.');
-      console.error(err);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    await api.post('/observations', {
+      wildlife_id:  wildlifeId || null,
+      location,
+      notes: fullNotes,
+      observed_at: date ? new Date(date).toISOString() : new Date().toISOString(),
+    });
+
+    alert("Observation added successfully!");
+    navigate('/observations');
+  } catch (err) {
+    setError('Failed to add observation. Please try again.');
+    console.error(err);
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   return (
     <div className="observation-container">

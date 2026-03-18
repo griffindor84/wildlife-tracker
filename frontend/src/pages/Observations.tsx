@@ -91,8 +91,10 @@ function Observations() {
                   {new Date(obs.observed_at).toLocaleDateString()}
                 </td>
                 <td className="species-cell">
-                  {obs.wildlife_name || 'Unknown'}
-                </td>
+                {obs.wildlife_name || 
+                obs.notes?.match(/Species detected: (.+)/)?.[1] || 
+                'Unknown'}
+              </td>
                 <td>{obs.location}</td>
                 <td className={`notes-text ${expandedId === obs.id ? 'full' : 'truncated'}`}>
                   {obs.notes}
