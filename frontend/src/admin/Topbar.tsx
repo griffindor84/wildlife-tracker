@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 type TopbarProps = {
   onToggleSidebar: () => void;
@@ -8,7 +7,6 @@ type TopbarProps = {
 
 const Topbar = ({ onToggleSidebar }: TopbarProps) => {
   const { user, signOut } = useAuth();
-  const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
