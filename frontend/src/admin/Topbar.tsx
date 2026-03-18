@@ -32,11 +32,15 @@ const Topbar = ({ onToggleSidebar }: TopbarProps) => {
           {darkMode ? "☀️ Light" : "🌙 Dark"}
         </button>
 
-        <span>
-          👤 {user?.user_metadata?.full_name || user?.email || 'Admin'}
-        </span>
+        {user && (
+          <span className="topbar-username">
+            👤 {user.user_metadata?.full_name || user.email}
+          </span>
+        )}
 
-        <button onClick={handleLogout}>Logout</button>
+        <button onClick={handleLogout} className="topbar-logout-btn">
+          Logout
+        </button>
       </div>
     </header>
   );
