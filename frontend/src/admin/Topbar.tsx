@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 type TopbarProps = {
   onToggleSidebar: () => void;
 };
 
 const Topbar = ({ onToggleSidebar }: TopbarProps) => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
@@ -14,12 +18,14 @@ const Topbar = ({ onToggleSidebar }: TopbarProps) => {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
+  const handleLogout = async () => {
+    await signOut();
+    window.location.href = '/login';
+  };
+
   return (
     <header className="topbar">
-      {/* 🔥 Collapse button */}
-      <button className="collapse-btn" onClick={onToggleSidebar}>
-        ☰
-      </button>
+      <button className="collapse-btn" onClick={onToggleSidebar}>☰</button>
 
       <h1>Admin Dashboard</h1>
 
@@ -28,9 +34,11 @@ const Topbar = ({ onToggleSidebar }: TopbarProps) => {
           {darkMode ? "☀️ Light" : "🌙 Dark"}
         </button>
 
-        <span>Admin: Enock</span>
+        <span>
+          👤 {user?.user_metadata?.full_name || user?.email || 'Admin'}
+        </span>
 
-        <button>Logout</button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
     </header>
   );

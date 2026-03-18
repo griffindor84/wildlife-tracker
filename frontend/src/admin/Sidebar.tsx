@@ -1,12 +1,21 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 type SidebarProps = {
   collapsed: boolean;
 };
 
 const Sidebar = ({ collapsed }: SidebarProps) => {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "sidebar-link active" : "sidebar-link";
+
+  const handleLogout = async () => {
+    await signOut();
+    window.location.href = '/login';
+  };
 
   return (
     <aside className="sidebar">
@@ -37,7 +46,20 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           <span className="sidebar-icon">⚙️</span>
           {!collapsed && <span className="sidebar-label">Settings</span>}
         </NavLink>
+
+        {/* Back to main app */}
+        <NavLink className={linkClass} to="/">
+          <span className="sidebar-icon">🏠</span>
+          {!collapsed && <span className="sidebar-label">Back to App</span>}
+        </NavLink>
       </nav>
+
+      <div className="sidebar-footer">
+        <button className="sidebar-logout" onClick={handleLogout}>
+          <span className="sidebar-icon">🚪</span>
+          {!collapsed && <span className="sidebar-label">Logout</span>}
+        </button>
+      </div>
     </aside>
   );
 };

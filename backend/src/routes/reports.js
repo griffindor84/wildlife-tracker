@@ -1,10 +1,11 @@
 const express = require('express');
 const { pool } = require('../middleware/db');
 const auth = require('../middleware/auth');
+const adminOnly = require('../middleware/adminOnly');
 
 const router = express.Router();
 
-// GET /api/reports — all for admins, own for others
+// GET /api/reports
 router.get('/', auth, async (req, res) => {
   try {
     let result;
@@ -28,7 +29,7 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// POST /api/reports — submit a report
+// POST /api/reports
 router.post('/', auth, async (req, res) => {
   const { title, description } = req.body;
   if (!title) return res.status(400).json({ error: 'Title is required' });
@@ -38,6 +39,25 @@ router.post('/', auth, async (req, res) => {
       [req.user.id, title, description]
     );
     res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// PATCH /api/reports/:id/status — admin only
+router.patch('/:id/status', auth, adminOnly, async (req, res) => {
+  const { status } = req.body;
+  if (!['pending', 'reviewed', 'resolved'].includes(status)) {
+    return res.status(400).json({ error: 'Invalid status' });
+  }
+  try {
+    const result = await pool.query(
+      'UPDATE reports SET status = $1 WHERE id = $2 RETURNING *',
+      [status, req.params.id]
+    );
+    if (result.rowCount === 0) return res.status(404).json({ error: 'Report not found' });
+    res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
