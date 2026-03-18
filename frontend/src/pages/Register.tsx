@@ -60,7 +60,7 @@ export default function Register() {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">
-            <img src="assets/wildlife.jpeg" alt="Wildlife Tracker" className="auth-logo-img"
+            <img src="public/bg1.jpeg" alt="Wildlife Tracker" className="auth-logo-img"
               onError={(e) => (e.currentTarget.style.display = 'none')} />
           </div>
           <h1 className="auth-title">Welcome to Wildlife Tracker</h1>
