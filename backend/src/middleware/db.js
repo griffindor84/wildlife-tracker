@@ -5,6 +5,7 @@ const pool = new Pool(
     ? {
         connectionString: process.env.DATABASE_URL,
         ssl: { rejectUnauthorized: false }, // required for Render
+         family: 4,
       }
     : {
         host:     process.env.DB_HOST     || 'localhost',
