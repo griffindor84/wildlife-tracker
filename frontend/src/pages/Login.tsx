@@ -32,7 +32,7 @@ export default function Login() {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">
-            <img src="public/bg1.png" alt="Wildlife Tracker" className="auth-logo-img"
+            <img src="bg1.png" alt="Wildlife Tracker" className="auth-logo-img"
               onError={(e) => (e.currentTarget.style.display = 'none')} />
           </div>
           <h1 className="auth-title">Welcome to Wildlife Tracker</h1>
