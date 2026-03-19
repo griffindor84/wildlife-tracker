@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
 function Navbar() {
-  const { user, signOut, isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -27,11 +27,6 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
 
-  const handleLogout = async () => {
-    await signOut();
-    window.location.href = '/login';
-  };
-
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -41,13 +36,13 @@ function Navbar() {
         {menuOpen ? '✕' : '☰'}
       </button>
 
-      {/* Brand — center on mobile */}
+      {/* Brand */}
       <div className="nav-brand">
         <span className="logo">🐾</span>
         <span className="brand-name">Wildpath</span>
       </div>
 
-      {/* Desktop: links in middle */}
+      {/* Nav links */}
       <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
         <Link to="/"               className="nav-link" onClick={closeMenu}>Home</Link>
         <Link to="/aboutus"        className="nav-link" onClick={closeMenu}>About Us</Link>
@@ -61,25 +56,23 @@ function Navbar() {
           <Link to="/admin/dashboard" className="nav-link admin-link" onClick={closeMenu}>Admin Panel</Link>
         )}
 
-        {/* User + logout inside mobile menu only */}
+        {/* Username inside mobile menu */}
         <div className="nav-user-mobile">
           {user && (
             <span className="nav-username">
               👤 {user.user_metadata?.full_name || user.email}
             </span>
           )}
-          <button onClick={handleLogout} className="nav-logout-btn">Logout</button>
         </div>
       </div>
 
-      {/* Desktop: user + logout RIGHT */}
+      {/* Desktop: username only on RIGHT */}
       <div className="nav-user-desktop">
         {user && (
           <span className="nav-username">
             👤 {user.user_metadata?.full_name || user.email}
           </span>
         )}
-        <button onClick={handleLogout} className="nav-logout-btn">Logout</button>
       </div>
     </nav>
   );
