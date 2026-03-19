@@ -8,7 +8,6 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
     if (menuOpen) {
       document.body.classList.add('menu-open');
@@ -18,16 +17,13 @@ function Navbar() {
     return () => document.body.classList.remove('menu-open');
   }, [menuOpen]);
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
       }
     };
-    if (menuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    if (menuOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
 
@@ -40,32 +36,18 @@ function Navbar() {
 
   return (
     <nav className="navbar" ref={menuRef}>
-      {/* Brand */}
+      {/* Hamburger LEFT — mobile only */}
+      <button className="nav-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+        {menuOpen ? '✕' : '☰'}
+      </button>
+
+      {/* Brand — center on mobile */}
       <div className="nav-brand">
         <span className="logo">🐾</span>
         <span className="brand-name">Wildpath</span>
       </div>
 
-      {/* Hamburger — mobile only */}
-      <button
-        className="nav-toggle"
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Toggle menu"
-      >
-        {menuOpen ? '✕' : '☰'}
-      </button>
-
-      {/* Desktop user */}
-      <div className="nav-user" style={{ display: 'flex' }}>
-        {user && (
-          <span className="nav-username">
-            👤 {user.user_metadata?.full_name || user.email}
-          </span>
-        )}
-        <button onClick={handleLogout} className="nav-logout-btn">Logout</button>
-      </div>
-
-      {/* Nav links — collapses on mobile */}
+      {/* Desktop: links in middle */}
       <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
         <Link to="/"               className="nav-link" onClick={closeMenu}>Home</Link>
         <Link to="/aboutus"        className="nav-link" onClick={closeMenu}>About Us</Link>
@@ -76,13 +58,11 @@ function Navbar() {
         <Link to="/contactus"      className="nav-link" onClick={closeMenu}>Contact Us</Link>
         <Link to="/profile"        className="nav-link" onClick={closeMenu}>Profile</Link>
         {isAdmin && (
-          <Link to="/admin/dashboard" className="nav-link admin-link" onClick={closeMenu}>
-            Admin Panel
-          </Link>
+          <Link to="/admin/dashboard" className="nav-link admin-link" onClick={closeMenu}>Admin Panel</Link>
         )}
 
-        {/* User + logout inside mobile menu */}
-        <div className="nav-user">
+        {/* User + logout inside mobile menu only */}
+        <div className="nav-user-mobile">
           {user && (
             <span className="nav-username">
               👤 {user.user_metadata?.full_name || user.email}
@@ -90,6 +70,16 @@ function Navbar() {
           )}
           <button onClick={handleLogout} className="nav-logout-btn">Logout</button>
         </div>
+      </div>
+
+      {/* Desktop: user + logout RIGHT */}
+      <div className="nav-user-desktop">
+        {user && (
+          <span className="nav-username">
+            👤 {user.user_metadata?.full_name || user.email}
+          </span>
+        )}
+        <button onClick={handleLogout} className="nav-logout-btn">Logout</button>
       </div>
     </nav>
   );
