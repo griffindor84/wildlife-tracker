@@ -1,57 +1,53 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import './Auth.css';
-import type { User } from '../types';
 
-interface LoginProps {
-  onLogin: (user: User) => void;
-}
-
-export default function Login({ onLogin }: LoginProps) {
+export default function Login() {
   const navigate = useNavigate();
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError]       = useState('');
+  const [loading, setLoading]   = useState(false);
 
-  const [formData, setFormData] = useState<{ email: string; password: string }>({
-    email: '',
-    password: ''
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
 
-    // Simulate successful login
-    onLogin({
-      name: 'Demo User',
-      email: formData.email,
-      joinDate: new Date().toLocaleDateString()
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-    // 🔥 Redirect to home page
-    navigate("/");
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
+
+    navigate('/observations', { replace: true });
   };
 
   return (
     <div className="auth-container">
+      <div className="auth-bg" />
       <div className="auth-card">
         <div className="auth-header">
+          <div className="auth-logo">
+            <img src="bg1.png" alt="Wildlife Tracker" className="auth-logo-img"
+              onError={(e) => (e.currentTarget.style.display = 'none')} />
+          </div>
           <h1 className="auth-title">Welcome to Wildlife Tracker</h1>
           <p className="auth-subtitle">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
+          {error && <div className="auth-error">{error}</div>}
+
           <div className="input-group">
             <label className="input-label">Email</label>
             <input
               type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="input-field"
               placeholder="your@email.com"
               required
@@ -62,27 +58,23 @@ export default function Login({ onLogin }: LoginProps) {
             <label className="input-label">Password</label>
             <input
               type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="input-field"
               placeholder="Enter your password"
               required
             />
           </div>
 
-          <button type="submit" className="submit-button">
-            Sign In
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
         <div className="auth-footer">
           <p className="footer-text">
             Don't have an account?{' '}
-            <span
-              onClick={() => navigate('/register')}
-              className="auth-link"
-            >
+            <span onClick={() => navigate('/register')} className="auth-link">
               Sign up
             </span>
           </p>

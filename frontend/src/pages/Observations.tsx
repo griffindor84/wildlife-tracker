@@ -1,58 +1,56 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../api/axios';
 import './Observations.css';
 
-// Interface to ensure data accuracy 
-interface Sighting {
+interface Observation {
   id: number;
-  userId: string; 
-  speciesName: string;
-  date: string;
+  user_id: number;
+  wildlife_id: number | null;
+  wildlife_name?: string;
   location: string;
-  type: 'General Sighting' | 'Injured Animal' | 'Illegal Activity';
   notes: string;
+  observed_at: string;
+  created_at: string;
 }
 
-const ALL_DATA: Sighting[] = [
-  { 
-    id: 1, 
-    userId: "ian_mathai", 
-    speciesName: "African Elephant", 
-    date: "2026-02-07", 
-    location: "Maasai Mara", 
-    type: "General Sighting", 
-    notes: "A large herd of around 15 elephants was seen moving toward the southern riverbank during the golden hour. Truly a majestic sight." 
-  },
-  { 
-    id: 2, 
-    userId: "Ian_mathai", 
-    speciesName: "Black Rhino", 
-    date: "2026-02-05", 
-    location: "Nyeri", 
-    type: "Injured Animal", 
-    notes: "Spotted near the edge of the conservancy. It appeared to have a slight limp on its left front leg. Reported to local rangers." 
-  },
-  { 
-    id: 3, 
-    userId: "other_user", 
-    speciesName: "Mountain Gorilla", 
-    date: "2026-02-01", 
-    location: "Bwindi", 
-    type: "General Sighting", 
-    notes: "This shouldn't be visible to Ian." 
-  }
-];
-
 function Observations() {
-  // Simulate the logged-in user session
-  const currentUserId = "ian_mathai"; 
+  const [observations, setObservations] = useState<Observation[]>([]);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Filter only the data belonging to the current user
-  const myObservations = ALL_DATA.filter(obs => obs.userId === currentUserId);
+  useEffect(() => {
+    fetchObservations();
+  }, []);
+
+  const fetchObservations = async () => {
+    try {
+      const res = await api.get('/observations');
+      setObservations(res.data);
+    } catch (err) {
+      setError('Failed to load observations');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this observation?')) return;
+    try {
+      await api.delete(`/observations/${id}`);
+      setObservations(observations.filter(obs => obs.id !== id));
+    } catch (err) {
+      alert('Failed to delete observation');
+    }
+  };
 
   const toggleExpand = (id: number) => {
     setExpandedId(expandedId === id ? null : id);
   };
+
+  if (loading) return <div className="loading">Loading observations...</div>;
 
   return (
     <div className="observations-container">
@@ -61,10 +59,15 @@ function Observations() {
           <h1>My Field Reports</h1>
           <p>Personal log of wildlife sightings and alerts.</p>
         </div>
-        <div className="stats-badge">
-          Total Reports: {myObservations.length}
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div className="stats-badge">Total Reports: {observations.length}</div>
+          <Link to="/addobservation">
+            <button className="add-btn">+ Add Observation</button>
+          </Link>
         </div>
       </header>
+
+      {error && <div className="error-message">{error}</div>}
 
       <div className="table-wrapper">
         <table className="observations-table">
@@ -73,27 +76,36 @@ function Observations() {
               <th>Date</th>
               <th>Species</th>
               <th>Location</th>
-              <th>Type</th>
               <th>Notes (Click to expand)</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {myObservations.map((obs) => (
-              <tr 
-                key={obs.id} 
-                onClick={() => toggleExpand(obs.id)} 
+            {observations.map((obs) => (
+              <tr
+                key={obs.id}
+                onClick={() => toggleExpand(obs.id)}
                 className={`obs-row ${expandedId === obs.id ? 'active' : ''}`}
               >
-                <td className="date-cell">{obs.date}</td>
-                <td className="species-cell">{obs.speciesName}</td>
-                <td>{obs.location}</td>
-                <td>
-                  <span className={`type-tag ${obs.type.replace(/\s+/g, '-').toLowerCase()}`}>
-                    {obs.type}
-                  </span>
+                <td className="date-cell">
+                  {new Date(obs.observed_at).toLocaleDateString()}
                 </td>
+                <td className="species-cell">
+                {obs.wildlife_name || 
+                obs.notes?.match(/Species detected: (.+)/)?.[1] || 
+                'Unknown'}
+              </td>
+                <td>{obs.location}</td>
                 <td className={`notes-text ${expandedId === obs.id ? 'full' : 'truncated'}`}>
                   {obs.notes}
+                </td>
+                <td>
+                  <button
+                    className="delete-btn"
+                    onClick={(e) => { e.stopPropagation(); handleDelete(obs.id); }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -101,9 +113,12 @@ function Observations() {
         </table>
       </div>
 
-      {myObservations.length === 0 && (
+      {observations.length === 0 && !loading && (
         <div className="empty-state">
           <p>You haven't added any observations yet.</p>
+          <Link to="/addobservation">
+            <button className="add-btn">Add your first observation</button>
+          </Link>
         </div>
       )}
     </div>

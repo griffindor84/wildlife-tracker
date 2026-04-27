@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 type TopbarProps = {
   onToggleSidebar: () => void;
 };
 
 const Topbar = ({ onToggleSidebar }: TopbarProps) => {
+  const { user, signOut } = useAuth();
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
@@ -14,12 +16,14 @@ const Topbar = ({ onToggleSidebar }: TopbarProps) => {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
+  const handleLogout = async () => {
+    await signOut();
+    window.location.href = '/login';
+  };
+
   return (
     <header className="topbar">
-      {/* 🔥 Collapse button */}
-      <button className="collapse-btn" onClick={onToggleSidebar}>
-        ☰
-      </button>
+      <button className="collapse-btn" onClick={onToggleSidebar}>☰</button>
 
       <h1>Admin Dashboard</h1>
 
@@ -28,9 +32,15 @@ const Topbar = ({ onToggleSidebar }: TopbarProps) => {
           {darkMode ? "☀️ Light" : "🌙 Dark"}
         </button>
 
-        <span>Admin: Enock</span>
+        {user && (
+          <span className="topbar-username">
+            👤 {user.user_metadata?.full_name || user.email}
+          </span>
+        )}
 
-        <button>Logout</button>
+        <button onClick={handleLogout} className="topbar-logout-btn">
+          Logout
+        </button>
       </div>
     </header>
   );
