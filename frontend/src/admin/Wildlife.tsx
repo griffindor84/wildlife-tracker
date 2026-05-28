@@ -29,7 +29,7 @@ const WildlifeAdmin = () => {
     try {
       const res = await api.get('/wildlife');
       setWildlife(res.data);
-    } catch (err) {
+    } catch {
       setError('Failed to load wildlife');
     } finally {
       setLoading(false);
@@ -47,7 +47,7 @@ const WildlifeAdmin = () => {
     try {
       await api.delete(`/wildlife/${id}`);
       setWildlife(wildlife.filter(w => w.id !== id));
-    } catch (err) {
+    } catch {
       alert('Failed to delete');
     }
   };
@@ -66,7 +66,7 @@ const WildlifeAdmin = () => {
       setShowForm(false);
       setEditItem(null);
       setForm({ name: '', species: '', description: '', habitat: '', status: '' });
-    } catch (err) {
+    } catch {
       alert('Failed to save wildlife entry');
     } finally {
       setSubmitting(false);

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { useAuth } from '../context/AuthContext';
 import './Auth.css';
 
 export default function Register() {
   const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [name, setName]         = useState('');
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
@@ -23,35 +24,13 @@ export default function Register() {
 
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: name, role: 'Ranger' }
-      }
-    });
-
-    if (error) {
-      setError(error.message);
+    try {
+      await signUp(name, email, password);
+      navigate('/observations', { replace: true });
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to create account');
       setLoading(false);
-      return;
     }
-
-    // Sync user to our backend DB
-    if (data.user) {
-      await fetch(`${import.meta.env.VITE_API_URL}/auth/sync`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          supabase_id: data.user.id,
-          email:       data.user.email,
-          name,
-          role: 'Ranger'
-        })
-      });
-    }
-
-    navigate('/', { replace: true });
   };
 
   return (

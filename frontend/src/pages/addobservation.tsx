@@ -17,7 +17,6 @@ export default function AddObservation() {
   const [location, setLocation]       = useState("");
   const [date, setDate]               = useState("");
   const [notes, setNotes]             = useState("");
-  const [image, setImage]             = useState<File | null>(null);
   const [analyzing, setAnalyzing]     = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [submitting, setSubmitting]   = useState(false);
@@ -42,7 +41,6 @@ export default function AddObservation() {
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
-    setImage(file);
     try {
       setAnalyzing(true);
       setAiSuggestions([]);

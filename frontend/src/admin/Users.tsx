@@ -24,7 +24,7 @@ const Users = () => {
     try {
       const res = await api.get('/users');
       setUsers(res.data);
-    } catch (err) {
+    } catch {
       setError('Failed to load users');
     } finally {
       setLoading(false);
@@ -36,9 +36,9 @@ const Users = () => {
     try {
       await api.delete(`/users/${id}`);
       setUsers(users.filter(u => u.id !== id));
-    } catch (err) {
+    } catch {
       alert('Failed to delete user');
-    }
+    } 
   };
 
   const handleEditRole = async (id: number) => {
@@ -46,7 +46,7 @@ const Users = () => {
       await api.patch(`/users/${id}/role`, { role: editRole });
       setUsers(users.map(u => u.id === id ? { ...u, role: editRole } : u));
       setEditId(null);
-    } catch (err) {
+    } catch {
       alert('Failed to update role');
     }
   };

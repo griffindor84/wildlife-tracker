@@ -41,7 +41,7 @@ function Observations() {
     try {
       await api.delete(`/observations/${id}`);
       setObservations(observations.filter(obs => obs.id !== id));
-    } catch (err) {
+    } catch {
       alert('Failed to delete observation');
     }
   };

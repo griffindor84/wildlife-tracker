@@ -23,7 +23,7 @@ const AdminReports = () => {
     try {
       const res = await api.get('/reports');
       setReports(res.data);
-    } catch (err) {
+    } catch {
       setError('Failed to load reports');
     } finally {
       setLoading(false);
@@ -34,7 +34,7 @@ const AdminReports = () => {
     try {
       await api.patch(`/reports/${id}/status`, { status });
       setReports(reports.map(r => r.id === id ? { ...r, status: status as Report['status'] } : r));
-    } catch (err) {
+    } catch {
       alert('Failed to update status');
     }
   };
