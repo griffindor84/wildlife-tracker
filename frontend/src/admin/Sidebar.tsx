@@ -42,6 +42,11 @@ const Sidebar = ({ collapsed, mobileOpen, onClose }: SidebarProps) => {
           {!collapsed && <span className="sidebar-label">Wildlife</span>}
         </NavLink>
 
+        <NavLink className={linkClass} to="/admin/observations" onClick={handleLinkClick}>
+          <span className="sidebar-icon">📍</span>
+          {!collapsed && <span className="sidebar-label">Observations</span>}
+        </NavLink>
+
         <NavLink className={linkClass} to="/admin/reports" onClick={handleLinkClick}>
           <span className="sidebar-icon">📄</span>
           {!collapsed && <span className="sidebar-label">Reports</span>}

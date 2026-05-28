@@ -18,7 +18,7 @@ export default function Login() {
 
     try {
       await signIn(email, password);
-      navigate('/observations', { replace: true });
+      navigate('/', { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to sign in');
       setLoading(false);

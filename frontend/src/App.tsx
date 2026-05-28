@@ -19,6 +19,7 @@ import Settings from './admin/Settings';
 import Wildlife from './admin/Wildlife';
 import Users from './admin/Users';
 import AdminReports from './admin/AdminReports';
+import AdminObservations from './admin/AdminObservations';
 
 function ProtectedRoute({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) {
   const { isAuthenticated, isLoaded, isAdmin } = useAuth();
@@ -60,6 +61,7 @@ export default function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users"     element={<Users />} />
           <Route path="wildlife"  element={<Wildlife />} />
+          <Route path="observations" element={<AdminObservations />} />
           <Route path="reports"   element={<AdminReports />} />
           <Route path="settings"  element={<Settings />} />
         </Route>

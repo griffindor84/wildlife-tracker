@@ -26,7 +26,7 @@ export default function Register() {
 
     try {
       await signUp(name, email, password);
-      navigate('/observations', { replace: true });
+      navigate('/', { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to create account');
       setLoading(false);
