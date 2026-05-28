@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../lib/supabase';
 import './UserProfile.css';
 
 interface UserData {
@@ -13,7 +12,7 @@ interface UserData {
 }
 
 export default function UserProfile() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, updateProfile } = useAuth();
   const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -47,12 +46,10 @@ export default function UserProfile() {
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await supabase.auth.updateUser({
-        data: {
-          full_name: formData.name,
-          role:      formData.role,
-          about:     formData.about,
-        }
+      await updateProfile({
+        name: formData.name,
+        about: formData.about,
+        avatarUrl: formData.avatarUrl,
       });
       setIsEditing(false);
     } catch (err) {
@@ -105,11 +102,7 @@ export default function UserProfile() {
           </h2>
 
           <p className="profile-role">
-            {isEditing ? (
-              <input type="text" name="role" value={formData.role}
-                onChange={handleChange} className="edit-input role-input"
-                placeholder="Enter your role" />
-            ) : formData.role}
+            {formData.role}
           </p>
         </div>
 

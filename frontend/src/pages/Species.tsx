@@ -44,6 +44,15 @@ interface SpeciesData {
   imageUrl: string;
 }
 
+interface TrackedSpecies {
+  id: number;
+  name: string;
+  species?: string;
+  habitat?: string;
+  status?: string;
+  description?: string;
+}
+
 function Species() {
   const [speciesList, setSpeciesList] = useState<SpeciesData[]>([]);
   const [search, setSearch] = useState<string>("Panthera uncia");
@@ -55,36 +64,11 @@ function Species() {
   const [occurrenceCount, setOccurrenceCount] = useState<number>(0);
 
 
-  const [trackedSpecies, setTrackedSpecies] = useState<any[]>([]);
-useEffect(() => {
-  api.get('/wildlife').then(res => setTrackedSpecies(res.data)).catch(console.error);
-}, []);
+  const [trackedSpecies, setTrackedSpecies] = useState<TrackedSpecies[]>([]);
 
-{/* Tracked Species from Database */}
-{trackedSpecies.length > 0 && (
-  <div className="tracked-section">
-    <h2 className="tracked-title">🐾 Our Tracked Species</h2>
-    <div className="tracked-grid">
-      {trackedSpecies.map((animal) => (
-        <div key={animal.id} className="tracked-card">
-          <div className="tracked-body">
-            <h3>{animal.name}</h3>
-            <p className="tracked-scientific">{animal.species || '—'}</p>
-            <div className="tracked-meta">
-              <span className="tracked-habitat">🌍 {animal.habitat || 'Unknown'}</span>
-              <span className={`tracked-status ${animal.status?.toLowerCase().replace(/\s+/g, '-')}`}>
-                {animal.status || 'Unknown'}
-              </span>
-            </div>
-            {animal.description && (
-              <p className="tracked-desc">{animal.description}</p>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
+  useEffect(() => {
+    api.get('/wildlife').then(res => setTrackedSpecies(res.data)).catch(console.error);
+  }, []);
 
   // Fetch image from GBIF occurrences
   const fetchSpeciesImage = async (
@@ -207,6 +191,31 @@ useEffect(() => {
           <div className="input-glow"></div>
         </div>
       </header>
+
+      {trackedSpecies.length > 0 && (
+        <div className="tracked-section">
+          <h2 className="tracked-title">Our Tracked Species</h2>
+          <div className="tracked-grid">
+            {trackedSpecies.map((animal) => (
+              <div key={animal.id} className="tracked-card">
+                <div className="tracked-body">
+                  <h3>{animal.name}</h3>
+                  <p className="tracked-scientific">{animal.species || '-'}</p>
+                  <div className="tracked-meta">
+                    <span className="tracked-habitat">{animal.habitat || 'Unknown'}</span>
+                    <span className={`tracked-status ${animal.status?.toLowerCase().replace(/\s+/g, '-')}`}>
+                      {animal.status || 'Unknown'}
+                    </span>
+                  </div>
+                  {animal.description && (
+                    <p className="tracked-desc">{animal.description}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="loader-box">

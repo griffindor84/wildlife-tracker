@@ -70,7 +70,7 @@ const Settings = () => {
           <div><span style={{ color: '#6b7280' }}>App Version:</span> <strong>1.0.0</strong></div>
           <div><span style={{ color: '#6b7280' }}>Environment:</span> <strong>Production</strong></div>
           <div><span style={{ color: '#6b7280' }}>Database:</span> <strong>PostgreSQL</strong></div>
-          <div><span style={{ color: '#6b7280' }}>Auth:</span> <strong>Supabase</strong></div>
+          <div><span style={{ color: '#6b7280' }}>Auth:</span> <strong>JWT</strong></div>
         </div>
       </div>
 

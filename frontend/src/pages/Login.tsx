@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { useAuth } from '../context/AuthContext';
 import './Auth.css';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { signIn } = useAuth();
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
@@ -15,15 +16,13 @@ export default function Login() {
     setError('');
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      setError(error.message);
+    try {
+      await signIn(email, password);
+      navigate('/observations', { replace: true });
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to sign in');
       setLoading(false);
-      return;
     }
-
-    navigate('/observations', { replace: true });
   };
 
   return (
