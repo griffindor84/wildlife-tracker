@@ -1,73 +1,83 @@
-# React + TypeScript + Vite
+# Wildlife Tracker Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React, TypeScript, and Vite frontend for Wildlife Tracker. The frontend talks to the Express backend API and stores the backend JWT in `localStorage`.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The app runs on `http://localhost:5173` by default.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Environment Variables
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Create `frontend/.env` with:
+
+```text
+VITE_API_URL=http://localhost:5000/api
+```
+
+For Render, set:
+
+```text
+VITE_API_URL=https://<your-backend-service>.onrender.com/api
+```
+
+After changing frontend environment variables on Render, redeploy the frontend because Vite bakes env values into the build.
+
+Do not use the old Supabase frontend variables anymore:
+
+```text
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+VITE_SUPABASE_SERVICE_KEY
+```
+
+## Auth Flow
+
+- Login and register call the Express backend.
+- The backend returns `{ token, user }`.
+- The token is saved as `authToken` in `localStorage`.
+- Axios attaches `Authorization: Bearer <token>` to API requests.
+- Logout clears the saved token and user.
+
+## Main Routes
+
+| Route | Access | Description |
+|---|---|---|
+| `/` | Public | Home page |
+| `/login` | Public | Login |
+| `/register` | Public | Register |
+| `/observations` | Authenticated | Current user's own observations |
+| `/addobservation` | Authenticated | Add a new observation |
+| `/reports` | Authenticated | Current user's reports |
+| `/species` | Authenticated | Species search and tracked wildlife |
+| `/profile` | Authenticated | User profile |
+| `/admin/dashboard` | Admin | Admin dashboard |
+| `/admin/users` | Admin | Manage users |
+| `/admin/wildlife` | Admin | Manage wildlife records |
+| `/admin/observations` | Admin | Manage all observations |
+| `/admin/reports` | Admin | Manage all reports |
+| `/admin/settings` | Admin | Admin settings |
+
+## Sample Logins
+
+If you seeded Neon with [../docs/neon-schema-and-seed.sql](../docs/neon-schema-and-seed.sql):
+
+| Email | Password | Role |
+|---|---|---|
+| `admin@wildlifetracker.com` | `Admin12345` | Administrator |
+| `john@example.com` | `Ranger12345` | Ranger |
+| `amina@example.com` | `Ranger12345` | Ranger |
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run lint
 ```

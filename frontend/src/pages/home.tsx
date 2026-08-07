@@ -17,7 +17,7 @@ const Home = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/observations" className="nav-btn secondary">Observations</Link>
+                            <Link to="/observations" className="nav-btn secondary">My Observations</Link>
                             <Link to="/species"      className="nav-btn secondary">Species</Link>
                             <Link to="/reports"      className="nav-btn secondary">Reports</Link>
                             {isAdmin && (
@@ -40,7 +40,7 @@ const Home = () => {
                             </>
                         ) : (
                             <>
-                                <Link to="/observations"><button className="primary">Start Tracking</button></Link>
+                                <Link to="/addobservation"><button className="primary">Start Tracking</button></Link>
                                 <Link to="/species"><button className="secondary">Explore Species</button></Link>
                             </>
                         )}

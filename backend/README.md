@@ -1,111 +1,147 @@
-# Wildlife Tracker – Backend API
+# Wildlife Tracker Backend API
 
-Node.js / Express REST API for the Wildlife Tracker application.
+Node.js and Express REST API for Wildlife Tracker. The backend uses Neon PostgreSQL through `pg` and handles authentication with JWTs and bcrypt password hashes.
 
-## Getting started
+## Setup
 
 ```bash
 cd backend
-cp .env.example .env   # edit values as needed
 npm install
-npm run dev            # auto-restarts on file changes (Node ≥ 18)
-# or
-npm start
+npm run dev
 ```
 
-The server listens on **http://localhost:5000** by default.
+The API runs on `http://localhost:5000` by default.
 
-## Environment variables
+## Environment Variables
 
-| Variable       | Default                    | Description                         |
-|----------------|----------------------------|-------------------------------------|
-| `PORT`         | `5000`                     | Port the API listens on             |
-| `JWT_SECRET`   | `wildlife-tracker-secret-key` | Secret used to sign JWTs (change in prod!) |
-| `FRONTEND_URL` | `http://localhost:5173`    | Allowed CORS origin                 |
+Create `backend/.env` with:
 
-## API Endpoints
+```text
+PORT=5000
+DATABASE_URL=postgresql://<user>:<password>@<host>/<database>?sslmode=require
+JWT_SECRET=<long-random-secret>
+JWT_EXPIRES_IN=7d
+FRONTEND_URL=http://localhost:5173
+HF_API_KEY=<optional-image-analysis-key>
+```
 
-### Auth
-| Method | Path | Auth? | Description |
-|--------|------|-------|-------------|
-| POST | `/api/auth/register` | No | Register a new user |
-| POST | `/api/auth/login` | No | Login and receive a JWT |
+For Render, set `DATABASE_URL` to your Neon connection string and set `FRONTEND_URL` to your deployed frontend URL.
 
-### Observations (user-scoped)
-| Method | Path | Auth? | Description |
-|--------|------|-------|-------------|
-| GET | `/api/observations` | Yes | List the current user's observations |
-| POST | `/api/observations` | Yes | Create a new observation |
-| DELETE | `/api/observations/:id` | Yes | Delete an observation |
+Do not use the old Supabase variables anymore:
 
-### Reports
-| Method | Path | Auth? | Description |
-|--------|------|-------|-------------|
-| GET | `/api/reports` | Yes | List reports (all for admins, own for others) |
-| POST | `/api/reports` | Yes | Submit a new report |
+```text
+SUPABASE_URL
+SUPABASE_SERVICE_KEY
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+```
 
-### Users (admin only)
-| Method | Path | Auth? | Description |
-|--------|------|-------|-------------|
-| GET | `/api/users` | Admin | List all users |
-| DELETE | `/api/users/:id` | Admin | Delete a user |
+## Database
 
-### Wildlife (admin write)
-| Method | Path | Auth? | Description |
-|--------|------|-------|-------------|
-| GET | `/api/wildlife` | Yes | List tracked species |
-| POST | `/api/wildlife` | Admin | Add a new species entry |
-| PUT | `/api/wildlife/:id` | Admin | Update a species entry |
-| DELETE | `/api/wildlife/:id` | Admin | Delete a species entry |
+This project expects a PostgreSQL database with these tables:
 
-### Image Analysis
-| Method | Path | Auth? | Description |
-|--------|------|-------|-------------|
-| POST | `/api/analyze-image` | No | Upload an image (`multipart/form-data`, field `image`); returns `{ labels: string[] }` |
+- `users`
+- `wildlife`
+- `observations`
+- `reports`
 
-### Health
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/health` | Returns `{ status: "ok" }` |
+Use the ready-to-run Neon schema and seed file:
+
+```bash
+psql "$DATABASE_URL" -f ../docs/neon-schema-and-seed.sql
+```
+
+Or paste [../docs/neon-schema-and-seed.sql](../docs/neon-schema-and-seed.sql) into the Neon SQL Editor.
+
+Sample seeded logins:
+
+| Email | Password | Role |
+|---|---|---|
+| `admin@wildlifetracker.com` | `Admin12345` | Administrator |
+| `john@example.com` | `Ranger12345` | Ranger |
+| `amina@example.com` | `Ranger12345` | Ranger |
 
 ## Authentication
 
-After a successful login or register call you receive a JWT token:
+Login and register return a JWT:
 
 ```json
 {
   "token": "<jwt>",
-  "user": { "id": 1, "name": "...", "email": "...", "role": "Ranger" }
+  "user": {
+    "id": 1,
+    "name": "Admin User",
+    "email": "admin@wildlifetracker.com",
+    "role": "Administrator"
+  }
 }
 ```
 
-Pass the token in the `Authorization` header for protected routes:
+Send the token with protected requests:
 
-```
+```text
 Authorization: Bearer <jwt>
 ```
 
-## Data storage
+## API Endpoints
 
-Data is persisted in a **SQLite** database (`data/wildlife.db`), managed with
-[better-sqlite3](https://github.com/WiseLibs/better-sqlite3).
+### Auth
 
-The database file is created automatically on first start.  Tables are created
-via `CREATE TABLE IF NOT EXISTS` statements in `middleware/db.js`, which also
-seeds the default users, observations, reports and wildlife rows if the tables
-are empty.
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | No | Register a Ranger account |
+| `POST` | `/api/auth/login` | No | Login and receive a JWT |
+| `GET` | `/api/auth/me` | Yes | Get the current user |
+| `PATCH` | `/api/auth/me` | Yes | Update current user's profile |
 
-The `data/*.db` files are excluded from version control via `.gitignore`.
+### Observations
 
-> **Upgrading to PostgreSQL / MySQL:**  
-> Swap `better-sqlite3` for the `pg` or `mysql2` package and update the
-> `middleware/db.js` connection.  All route files use standard SQL and require
-> only minor adjustments (e.g. `$1` placeholders instead of `?`).
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/observations` | Yes | Rangers see their own observations; admins see all observations |
+| `POST` | `/api/observations` | Yes | Create an observation for the current user |
+| `DELETE` | `/api/observations/:id` | Yes | Rangers can delete their own observations; admins can delete any |
 
+### Reports
 
-## Default users
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/reports` | Yes | Rangers see their own reports; admins see all reports |
+| `POST` | `/api/reports` | Yes | Submit a report |
+| `PATCH` | `/api/reports/:id/status` | Admin | Update report status |
 
-| Email | Password | Role |
-|-------|----------|------|
-| `admin@wildlifetracker.com` | `password` | Administrator |
-| `john@example.com` | `password` | Ranger |
+### Users
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/users` | Admin | List users |
+| `PATCH` | `/api/users/:id/role` | Admin | Update a user role |
+| `DELETE` | `/api/users/:id` | Admin | Delete a user |
+
+### Wildlife
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/wildlife` | Yes | List tracked species |
+| `POST` | `/api/wildlife` | Admin | Add a species entry |
+| `PUT` | `/api/wildlife/:id` | Admin | Update a species entry |
+| `DELETE` | `/api/wildlife/:id` | Admin | Delete a species entry |
+
+### Image Analysis
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/analyze-image` | No | Upload `multipart/form-data` image field and receive labels |
+
+### Health
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/health` | Returns `{ "status": "ok" }` |
+
+## Scripts
+
+```bash
+npm run dev
+npm start
+```

@@ -48,7 +48,7 @@ function Navbar() {
         <Link to="/aboutus"        className="nav-link" onClick={closeMenu}>About Us</Link>
         <Link to="/reports"        className="nav-link" onClick={closeMenu}>Reports</Link>
         <Link to="/species"        className="nav-link" onClick={closeMenu}>Species</Link>
-        <Link to="/observations"   className="nav-link" onClick={closeMenu}>Observations</Link>
+        <Link to="/observations"   className="nav-link" onClick={closeMenu}>My Observations</Link>
         <Link to="/addobservation" className="nav-link" onClick={closeMenu}>Add Observation</Link>
         <Link to="/contactus"      className="nav-link" onClick={closeMenu}>Contact Us</Link>
         <Link to="/profile"        className="nav-link" onClick={closeMenu}>Profile</Link>
